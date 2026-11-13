@@ -152,7 +152,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     // during navigation, so the camera is only moved here otherwise.)
     final nativeNav = _mode == _Mode.navigating && !kIsWeb;
     if (_followMe && !nativeNav && _here != null) {
-      _moveCameraTo(_here!);
+      _followTo(_here!);
     }
   }
 
@@ -505,7 +505,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
 
     // Start following straight away with the last fix, then refresh it.
     setState(() => _followMe = true);
-    await _moveCameraTo(_here!, zoom: 18);
+    await _moveCameraTo(_here!, zoom: 18, duration: const Duration(milliseconds: 900));
 
     final fresh = await _locationService.freshPosition();
     if (!mounted) return;
@@ -521,7 +521,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       await _showWholeCampus();
       return;
     }
-    if (_followMe) await _moveCameraTo(_here!);
+    if (_followMe) _followTo(_here!);
   }
 
   // ---------------------------------------------------------------------------
@@ -546,16 +546,41 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       p.longitude >= _mapArea.southwest.longitude &&
       p.longitude <= _mapArea.northeast.longitude;
 
-  Future<void> _moveCameraTo(LatLng target, {double? zoom}) async {
+  /// Until this time the camera is flying somewhere the app sent it. GPS
+  /// updates must not start a new move meanwhile: on the web a new move
+  /// cancels the current one (the zoom-in would stop half-way).
+  DateTime _cameraBusyUntil = DateTime.fromMillisecondsSinceEpoch(0);
+
+  bool get _cameraBusy => DateTime.now().isBefore(_cameraBusyUntil);
+
+  Future<void> _moveCameraTo(
+    LatLng target, {
+    double? zoom,
+    Duration duration = const Duration(milliseconds: 500),
+  }) async {
     _lastCameraTarget = target;
-    await _map?.animateCamera(zoom == null
-        ? CameraUpdate.newLatLng(target)
-        : CameraUpdate.newLatLngZoom(target, zoom));
+    _cameraBusyUntil = DateTime.now().add(duration + const Duration(milliseconds: 400));
+    await _map?.animateCamera(
+      zoom == null
+          ? CameraUpdate.newLatLng(target)
+          : CameraUpdate.newLatLngZoom(target, zoom),
+      duration: duration,
+    );
   }
 
-  /// When the camera stops far from where we last put it, the user dragged it.
+  /// Keeps the user in the middle while following, without interrupting a
+  /// camera move that is still running and without moving for tiny changes.
+  void _followTo(LatLng here) {
+    if (_cameraBusy) return; // the next GPS update will catch up
+    final last = _lastCameraTarget;
+    if (last != null && _distance(last, here) < 2) return;
+    _moveCameraTo(here);
+  }
+
+  /// When the camera stops far from where the app last put it, the user
+  /// dragged the map: stop following.
   void _onCameraIdle() {
-    if (!_followMe || _lastCameraTarget == null) return;
+    if (!_followMe || _lastCameraTarget == null || _cameraBusy) return;
     final now = _map?.cameraPosition?.target;
     if (now != null && _distance(now, _lastCameraTarget!) > 30) {
       setState(() => _followMe = false);
