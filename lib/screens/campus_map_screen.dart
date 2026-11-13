@@ -145,12 +145,12 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     if (!mounted) return;
     setState(() => _position = p);
     _afterNewPosition();
-    if (_mode == _Mode.navigating) {
-      _updateNavigation();
-      // Phones follow the walker natively; on the web the camera is moved here.
-      if (kIsWeb && _here != null) {
-        _map?.animateCamera(CameraUpdate.newLatLng(_here!));
-      }
+    if (_mode == _Mode.navigating) _updateNavigation();
+    // Keep the user in the middle while following. (Phones follow natively
+    // during navigation, so the camera is only moved here otherwise.)
+    final nativeNav = _mode == _Mode.navigating && !kIsWeb;
+    if (_followMe && !nativeNav && _here != null) {
+      _moveCameraTo(_here!);
     }
   }
 
@@ -165,7 +165,8 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     }
     if (!_centredOnMe && _onCampus && _selected == null && _mode == _Mode.browse) {
       _centredOnMe = true;
-      _map?.animateCamera(CameraUpdate.newLatLngZoom(_here!, 17.3));
+      _followMe = true;
+      _moveCameraTo(_here!, zoom: 17.3);
     }
   }
 
@@ -409,6 +410,9 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     )));
     if (!kIsWeb) {
       await _map?.updateMyLocationTrackingMode(MyLocationTrackingMode.trackingCompass);
+    } else {
+      setState(() => _followMe = true);
+      _lastCameraTarget = _here;
     }
     _updateNavigation();
   }
@@ -496,17 +500,64 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       await _map?.updateMyLocationTrackingMode(MyLocationTrackingMode.trackingCompass);
       return;
     }
-    if (!_onCampus) {
-      _showMessage('You are not on CDU Casuarina campus right now.');
+
+    // Start following straight away with the last fix, then refresh it.
+    setState(() => _followMe = true);
+    await _moveCameraTo(_here!, zoom: 18);
+
+    final fresh = await _locationService.freshPosition();
+    if (!mounted) return;
+    if (fresh != null) {
+      setState(() => _position = fresh);
+      _afterNewPosition();
+    }
+
+    if (!_withinMapArea(_here!)) {
+      setState(() => _followMe = false);
+      final km = (_distance(_here!, CampusMapBounds.centre) / 1000).toStringAsFixed(1);
+      _showMessage('You are $km km from CDU Casuarina campus.');
       await _showWholeCampus();
       return;
     }
-    await _map?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: _here!,
-      zoom: 18,
-      tilt: 0,
-      bearing: _map?.cameraPosition?.bearing ?? 0,
-    )));
+    if (_followMe) await _moveCameraTo(_here!);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Follow me: after the location button is tapped the map keeps the user in
+  // the middle as they walk, until they drag the map themselves.
+  // ---------------------------------------------------------------------------
+
+  bool _followMe = false;
+  LatLng? _lastCameraTarget;
+
+  /// The map can show the campus plus about 3 km around it.
+  static final LatLngBounds _mapArea = LatLngBounds(
+    southwest: LatLng(CampusMapBounds.bottomLeft.latitude - 0.027,
+        CampusMapBounds.bottomLeft.longitude - 0.027),
+    northeast: LatLng(CampusMapBounds.topRight.latitude + 0.027,
+        CampusMapBounds.topRight.longitude + 0.027),
+  );
+
+  static bool _withinMapArea(LatLng p) =>
+      p.latitude >= _mapArea.southwest.latitude &&
+      p.latitude <= _mapArea.northeast.latitude &&
+      p.longitude >= _mapArea.southwest.longitude &&
+      p.longitude <= _mapArea.northeast.longitude;
+
+  Future<void> _moveCameraTo(LatLng target, {double? zoom}) async {
+    _lastCameraTarget = target;
+    await _map?.animateCamera(zoom == null
+        ? CameraUpdate.newLatLng(target)
+        : CameraUpdate.newLatLngZoom(target, zoom));
+  }
+
+  /// When the camera stops far from where we last put it, the user dragged it.
+  void _onCameraIdle() {
+    if (!_followMe || _lastCameraTarget == null) return;
+    final now = _map?.cameraPosition?.target;
+    if (now != null && _distance(now, _lastCameraTarget!) > 30) {
+      setState(() => _followMe = false);
+    }
   }
 
   void _showMessage(String message) {
@@ -531,7 +582,9 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
               target: CampusMapBounds.centre,
               zoom: _campusZoom,
             ),
-            cameraTargetBounds: CameraTargetBounds(CampusMapBounds.bounds),
+            cameraTargetBounds: CameraTargetBounds(_mapArea),
+            trackCameraPosition: true,
+            onCameraIdle: _onCameraIdle,
             minMaxZoomPreference: const MinMaxZoomPreference(14.5, 20),
             // Flat map only: no tilting.
             tiltGesturesEnabled: false,
@@ -587,6 +640,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
                   padding: EdgeInsets.only(right: 14, bottom: kIsWeb ? 34 : 14),
                   child: _MapButtons(
                     hasLocation: _hasLocation,
+                    following: _followMe && _hasLocation,
                     onWholeCampus: _showWholeCampus,
                     onMyLocation: _goToMyLocation,
                   ),
@@ -768,11 +822,15 @@ class _Chip extends StatelessWidget {
 class _MapButtons extends StatelessWidget {
   const _MapButtons({
     required this.hasLocation,
+    required this.following,
     required this.onWholeCampus,
     required this.onMyLocation,
   });
 
   final bool hasLocation;
+
+  /// The map is keeping the user in the middle (button shown solid blue).
+  final bool following;
   final VoidCallback onWholeCampus;
   final VoidCallback onMyLocation;
 
@@ -791,11 +849,17 @@ class _MapButtons extends StatelessWidget {
         const SizedBox(height: 10),
         FloatingActionButton(
           heroTag: 'my-location',
-          tooltip: 'My location',
-          backgroundColor: Colors.white,
+          tooltip: following ? 'Following your location' : 'Go to my location',
+          backgroundColor: following ? routeBlue : Colors.white,
           onPressed: onMyLocation,
-          child: Icon(hasLocation ? Icons.my_location : Icons.location_disabled,
-              color: routeBlue),
+          child: Icon(
+            !hasLocation
+                ? Icons.location_disabled
+                : following
+                    ? Icons.my_location
+                    : Icons.location_searching,
+            color: following ? Colors.white : routeBlue,
+          ),
         ),
       ],
     );

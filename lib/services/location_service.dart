@@ -72,6 +72,20 @@ class LocationService {
     );
   }
 
+  /// A fresh GPS fix right now, or null if the phone can't get one within [timeLimit].
+  Future<Position?> freshPosition({Duration timeLimit = const Duration(seconds: 6)}) async {
+    try {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: LocationSettings(
+          accuracy: LocationAccuracy.best,
+          timeLimit: timeLimit,
+        ),
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
   Stream<Position> positionStream() {
     const settings = LocationSettings(
       accuracy: LocationAccuracy.best,
