@@ -11,7 +11,7 @@ class AppInfo {
   static const String tagline = 'Find any building on Casuarina campus and walk there.';
 
   /// Keep in step with `version:` in pubspec.yaml.
-  static const String version = '1.0.0';
+  static const String version = '1.0.1';
 
   // --- You (the developer) --------------------------------------------------
   static const String developerName = 'Nabajyoti Sharma';

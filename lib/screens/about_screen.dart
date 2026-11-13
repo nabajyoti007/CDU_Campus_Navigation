@@ -23,15 +23,7 @@ class AboutScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 8),
-                Container(
-                  width: 76,
-                  height: 76,
-                  decoration: BoxDecoration(
-                    color: cduNavy,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(Icons.directions_walk, color: Colors.white, size: 42),
-                ),
+                Image.asset('assets/branding/app_icon.png', width: 84, height: 84),
                 const SizedBox(height: 14),
                 Text(AppInfo.appName,
                     style: theme.textTheme.headlineSmall

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- CDU navy, behind the app icon and the launch screen -->
+    <color name="ic_launcher_background">#211858</color>
+</resources>
