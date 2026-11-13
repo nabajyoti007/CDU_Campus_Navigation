@@ -54,3 +54,6 @@ app.*.map.json
 /release/
 *.apk
 *.aab
+
+# Local editor/assistant settings
+.claude/

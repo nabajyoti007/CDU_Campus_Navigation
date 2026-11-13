@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -125,6 +126,8 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   bool get _onCampus => _here != null && CampusMapBounds.contains(_here!);
 
   Future<void> _fixLocationProblem() async {
+    // A website cannot open the phone's settings; it can only ask again.
+    if (kIsWeb) return _startLocation();
     switch (_locationProblem) {
       case LocationProblem.serviceDisabled:
         await _locationService.openLocationSettings();
@@ -616,14 +619,13 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       return const _Chip(icon: Icons.gps_not_fixed, text: 'Finding your location…');
     }
     if (_locationProblem != null) {
+      final problem = LocationException(_locationProblem!);
       return _Chip(
         icon: Icons.location_off,
-        text: LocationException(_locationProblem!).message,
+        text: problem.message,
         colour: Colors.red.shade700,
-        action: _locationProblem == LocationProblem.permissionDenied ? 'Try again' : 'Settings',
-        onAction: _locationProblem == LocationProblem.permissionDenied
-            ? _startLocation
-            : _fixLocationProblem,
+        action: problem.canOpenSettings ? 'Settings' : 'Try again',
+        onAction: problem.canOpenSettings ? _fixLocationProblem : _startLocation,
       );
     }
     final acc = _position?.accuracy;

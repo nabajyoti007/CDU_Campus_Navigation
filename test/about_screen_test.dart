@@ -8,6 +8,9 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: AboutScreen()));
 
     expect(find.text(AppInfo.appName), findsOneWidget);
+    expect(find.text(AppInfo.webAppUrl), findsOneWidget);
+
+    await tester.scrollUntilVisible(find.text(AppInfo.developerName), 200);
     expect(find.text(AppInfo.developerName), findsOneWidget);
     expect(find.text('Student ID: ${AppInfo.studentId}'), findsOneWidget);
     expect(find.text(AppInfo.email), findsOneWidget);

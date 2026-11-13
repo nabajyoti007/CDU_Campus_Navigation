@@ -1,11 +1,12 @@
 {
-    "name": "cdu_campus_navigation",
-    "short_name": "cdu_campus_navigation",
+    "name": "CDU Campus Navigator",
+    "short_name": "CDU Navigator",
     "start_url": ".",
+    "scope": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#211858",
+    "theme_color": "#211858",
+    "description": "Find any building on CDU Casuarina campus and get walking directions. Independent student project by Nabajyoti Sharma.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

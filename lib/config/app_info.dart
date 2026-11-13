@@ -22,6 +22,10 @@ class AppInfo {
   static const String email = 's399970@students.cdu.edu.au'; // shown on the About screen
   static const String website = ''; // e.g. GitHub or LinkedIn URL
 
+  // --- Where to get the app -------------------------------------------------
+  static const String webAppUrl = 'https://nabajyoti007.github.io/CDU_Campus_Navigation/';
+  static const String sourceUrl = 'https://github.com/nabajyoti007/CDU_Campus_Navigation';
+
   // --- Copyright ------------------------------------------------------------
   static const int copyrightYear = 2026;
 

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:geolocator/geolocator.dart';
 
 /// Why the phone's location could not be used.
@@ -13,6 +14,15 @@ class LocationException implements Exception {
   final LocationProblem problem;
 
   String get message {
+    if (kIsWeb) {
+      switch (problem) {
+        case LocationProblem.serviceDisabled:
+          return 'Location is not available in this browser.';
+        case LocationProblem.permissionDenied:
+        case LocationProblem.permissionDeniedForever:
+          return 'Location is blocked. Allow location for this site in your browser.';
+      }
+    }
     switch (problem) {
       case LocationProblem.serviceDisabled:
         return 'Location is turned off on this phone.';
@@ -22,6 +32,10 @@ class LocationException implements Exception {
         return 'Location permission is blocked. Allow it in app settings.';
     }
   }
+
+  /// Phones can open the settings screen; a website can only ask again.
+  bool get canOpenSettings =>
+      !kIsWeb && problem != LocationProblem.permissionDenied;
 
   @override
   String toString() => message;

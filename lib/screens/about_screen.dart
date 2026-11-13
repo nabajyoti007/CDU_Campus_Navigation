@@ -48,7 +48,17 @@ class AboutScreen extends StatelessWidget {
 
           _Section(
             title: 'About this app',
-            child: Text(AppInfo.description, style: theme.textTheme.bodyMedium),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(AppInfo.description, style: theme.textTheme.bodyMedium),
+                const SizedBox(height: 6),
+                Text('Use it on any device (iPhone, Android, computer):',
+                    style: theme.textTheme.bodySmall),
+                const _CopyRow(icon: Icons.public, text: AppInfo.webAppUrl),
+                const _CopyRow(icon: Icons.code, text: AppInfo.sourceUrl),
+              ],
+            ),
           ),
 
           _Section(
