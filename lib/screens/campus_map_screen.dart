@@ -553,7 +553,8 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
                 Container(
                   width: double.infinity,
                   alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 14, bottom: 14),
+                  // On the web the map credit line sits along the bottom edge.
+                  padding: EdgeInsets.only(right: 14, bottom: kIsWeb ? 34 : 14),
                   child: _MapButtons(
                     hasLocation: _hasLocation,
                     onWholeCampus: _showWholeCampus,

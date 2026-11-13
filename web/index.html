@@ -33,6 +33,22 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>CDU Campus Navigator</title>
+
+  <!-- Map controls that MapLibre adds on the web only. The app has its own
+       buttons, so hide the duplicate location button and keep the rest clear
+       of the search bar and the app's buttons (same layout as the Android app). -->
+  <style>
+    /* Duplicate "my location" button. The blue location dot itself stays. */
+    .maplibregl-ctrl-geolocate { display: none !important; }
+    .maplibregl-ctrl-group:has(> .maplibregl-ctrl-geolocate:only-child) { display: none !important; }
+    /* Compass: bottom-left above the credit, clear of the search bar and messages. */
+    .maplibregl-ctrl-top-right {
+      top: auto !important; right: auto !important;
+      bottom: 34px !important; left: 4px !important;
+    }
+    /* Map credit (required): bottom-left, away from the app's buttons. */
+    .maplibregl-ctrl-bottom-right { right: auto !important; left: 0 !important; }
+  </style>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
