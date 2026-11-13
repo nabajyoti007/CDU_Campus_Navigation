@@ -143,6 +143,8 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
 
   void _onPosition(Position p) {
     if (!mounted) return;
+    // Skip rough readings that would pull the dot away from a recent good fix.
+    if (!shouldUsePosition(_position, p)) return;
     setState(() => _position = p);
     _afterNewPosition();
     if (_mode == _Mode.navigating) _updateNavigation();
@@ -507,7 +509,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
 
     final fresh = await _locationService.freshPosition();
     if (!mounted) return;
-    if (fresh != null) {
+    if (fresh != null && shouldUsePosition(_position, fresh)) {
       setState(() => _position = fresh);
       _afterNewPosition();
     }
@@ -717,10 +719,13 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     if (!_onCampus) {
       return const _Chip(icon: Icons.explore_off, text: 'You are not on campus right now');
     }
-    if (acc != null && acc > 20) {
+    if (acc != null && acc > lowAccuracyMetres) {
+      // The pale circle around the dot already shows the uncertainty; only
+      // speak up when it is large, and say what helps.
       return _Chip(
         icon: Icons.gps_not_fixed,
-        text: 'Weak GPS (±${acc.round()} m). Your dot may be off.',
+        text: 'Location accurate to ±${acc.round()} m. '
+            'Go outdoors or turn on precise location.',
         colour: Colors.orange.shade900,
       );
     }

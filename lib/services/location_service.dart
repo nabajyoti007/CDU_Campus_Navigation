@@ -41,6 +41,27 @@ class LocationException implements Exception {
   String toString() => message;
 }
 
+/// Accuracy (metres) above which the app suggests going outdoors.
+/// Browsers indoors typically report 15–50 m, which is still usable.
+const double lowAccuracyMetres = 50;
+
+/// Whether a new GPS reading should replace the current one.
+///
+/// Phones (and especially browsers) mix precise GPS fixes with rough Wi-Fi or
+/// cell estimates. A reading that is much less accurate than a recent good one
+/// is ignored, so the dot doesn't jump around; once the good reading is more
+/// than [staleAfter] old, any reading is accepted so the dot never freezes.
+bool shouldUsePosition(
+  Position? current,
+  Position next, {
+  Duration staleAfter = const Duration(seconds: 20),
+}) {
+  if (current == null) return true;
+  final muchWorse = next.accuracy > 30 && next.accuracy > current.accuracy * 2;
+  final currentIsRecent = next.timestamp.difference(current.timestamp) < staleAfter;
+  return !(muchWorse && currentIsRecent);
+}
+
 class LocationService {
   /// Checks the location service and permission, asking the user if needed.
   /// Throws [LocationException] if location cannot be used.
