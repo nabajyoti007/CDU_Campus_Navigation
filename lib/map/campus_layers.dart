@@ -27,6 +27,7 @@ class CampusLayers {
   static const _labels = 'cdu-labels';
   static const _route = 'cdu-route';
   static const _routeEnds = 'cdu-route-ends';
+  static const _me = 'cdu-me';
 
   static const _emptyCollection = {'type': 'FeatureCollection', 'features': []};
 
@@ -44,6 +45,7 @@ class CampusLayers {
     await controller.addGeoJsonSource(_labels, campus.labelsGeoJson!, promoteId: 'id');
     await controller.addGeoJsonSource(_route, _emptyCollection);
     await controller.addGeoJsonSource(_routeEnds, _emptyCollection);
+    await controller.addGeoJsonSource(_me, _emptyCollection);
 
     // 1. Precinct ground colours from the CDU map, under the roads.
     const areaProps = FillLayerProperties(
@@ -237,6 +239,38 @@ class CampusLayers {
       maxzoom: 17.5,
       enableInteraction: false,
     );
+
+    // "You are here" (used on the web, where the map has no built-in location dot):
+    // pale circle sized to the GPS accuracy in metres, then a blue dot with a white ring.
+    // Pixel radius = metres * 2^zoom / 152911 (metres per pixel at Darwin's latitude).
+    await controller.addCircleLayer(
+      _me,
+      'cdu-me-accuracy',
+      const CircleLayerProperties(
+        circleRadius: [
+          'interpolate', ['exponential', 2], ['zoom'],
+          10, ['*', ['get', 'accuracy'], 0.0066966],
+          22, ['*', ['get', 'accuracy'], 27.4297],
+        ],
+        circleColor: '#1A73E8',
+        circleOpacity: 0.15,
+        circleStrokeColor: '#1A73E8',
+        circleStrokeOpacity: 0.35,
+        circleStrokeWidth: 1,
+      ),
+      enableInteraction: false,
+    );
+    await controller.addCircleLayer(
+      _me,
+      'cdu-me-dot',
+      const CircleLayerProperties(
+        circleRadius: 8,
+        circleColor: '#1A73E8',
+        circleStrokeColor: '#FFFFFF',
+        circleStrokeWidth: 3,
+      ),
+      enableInteraction: false,
+    );
   }
 
   Future<void> highlight(String? buildingId) => controller.setFilter(
@@ -270,6 +304,15 @@ class CampusLayers {
     ];
     await controller.setGeoJsonSource(_routeEnds, {'type': 'FeatureCollection', 'features': ends});
   }
+
+  /// Draws (or moves) the "you are here" dot. Pass null to hide it.
+  Future<void> showMyLocation(LatLng? here, double accuracyMetres) =>
+      controller.setGeoJsonSource(_me, {
+        'type': 'FeatureCollection',
+        'features': [
+          if (here != null) _point(here, {'accuracy': accuracyMetres.clamp(3, 200)}),
+        ],
+      });
 
   Future<void> clearRoutes() async {
     await controller.setGeoJsonSource(_route, _emptyCollection);

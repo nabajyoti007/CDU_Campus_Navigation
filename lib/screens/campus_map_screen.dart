@@ -96,6 +96,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
         _position = position;
         _locating = false;
       });
+      _afterNewPosition();
       _positionSubscription = _locationService.positionStream().listen(
         _onPosition,
         onError: (Object _) {
@@ -143,7 +144,29 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   void _onPosition(Position p) {
     if (!mounted) return;
     setState(() => _position = p);
-    if (_mode == _Mode.navigating) _updateNavigation();
+    _afterNewPosition();
+    if (_mode == _Mode.navigating) {
+      _updateNavigation();
+      // Phones follow the walker natively; on the web the camera is moved here.
+      if (kIsWeb && _here != null) {
+        _map?.animateCamera(CameraUpdate.newLatLng(_here!));
+      }
+    }
+  }
+
+  /// Whether the map has already jumped to the user's first on-campus position.
+  bool _centredOnMe = false;
+
+  /// Draws the web location dot and, once, centres the map on the user.
+  void _afterNewPosition() {
+    if (!_layersReady || _here == null) return;
+    if (kIsWeb) {
+      _layers?.showMyLocation(_here, _position?.accuracy ?? 10);
+    }
+    if (!_centredOnMe && _onCampus && _selected == null && _mode == _Mode.browse) {
+      _centredOnMe = true;
+      _map?.animateCamera(CameraUpdate.newLatLngZoom(_here!, 17.3));
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -161,6 +184,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       await _layers!.addAll(_campus);
       if (!mounted) return;
       setState(() => _layersReady = true);
+      _afterNewPosition();
     } catch (e) {
       if (!mounted) return;
       setState(() => _mapError = 'Could not draw the campus: $e');
@@ -383,7 +407,9 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       tilt: 0,
       bearing: _position?.heading ?? 0,
     )));
-    await _map?.updateMyLocationTrackingMode(MyLocationTrackingMode.trackingCompass);
+    if (!kIsWeb) {
+      await _map?.updateMyLocationTrackingMode(MyLocationTrackingMode.trackingCompass);
+    }
     _updateNavigation();
   }
 
@@ -435,7 +461,9 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   }
 
   Future<void> _endNavigation() async {
-    await _map?.updateMyLocationTrackingMode(MyLocationTrackingMode.none);
+    if (!kIsWeb) {
+      await _map?.updateMyLocationTrackingMode(MyLocationTrackingMode.none);
+    }
     final b = _selected;
     await _clearSelection();
     if (b != null) await _selectBuilding(b);
@@ -464,7 +492,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       }
       return;
     }
-    if (_mode == _Mode.navigating) {
+    if (_mode == _Mode.navigating && !kIsWeb) {
       await _map?.updateMyLocationTrackingMode(MyLocationTrackingMode.trackingCompass);
       return;
     }
@@ -514,7 +542,9 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
             onMapCreated: _onMapCreated,
             onStyleLoadedCallback: _onStyleLoaded,
             onMapClick: _onMapClick,
-            myLocationEnabled: _hasLocation,
+            // Phones draw the location dot natively; the web app draws its own
+            // (CampusLayers.showMyLocation), which is more reliable in browsers.
+            myLocationEnabled: _hasLocation && !kIsWeb,
             myLocationTrackingMode: MyLocationTrackingMode.none,
             myLocationRenderMode: _mode == _Mode.navigating
                 ? MyLocationRenderMode.compass
