@@ -1,0 +1,92 @@
+id,label,precinct,source,area_m2,note
+osm-174692095,,,osm,361,"OSM shape, no number on PDF"
+osm-1074155766,,,osm,109,"OSM shape, no number on PDF"
+osm-1132411827,,,osm,158,"OSM shape, no number on PDF"
+osm-1132411841,,,osm,125,"OSM shape, no number on PDF"
+osm-1076722585,Goodstart Early Learning CDU,,osm,992,OSM name; PDF shows no number here - check on campus
+osm-7890635,Blue 1,Blue,osm,4129,OSM shape and name match PDF
+osm-544531351,Blue 2,Blue,osm,3517,OSM shape and name match PDF
+osm-21744564,Blue 5,Blue,osm,3972,OSM shape and name match PDF
+osm-545010073,Blue 6,Blue,osm,730,OSM shape and name match PDF
+osm-1053518534,Blue 7,Blue,osm,268,"OSM shape, label read from PDF"
+pdf-80,Blue 8,Blue,osm+pdf,1813,PDF Blue 8 (Under Construction) drawn over OSM Blue 3 + Blue 4 outlines
+pdf-84,Water Tank,Blue,pdf,668,traced from PDF colours (+/- 3-5 m)
+osm-545388959,,Brown,osm,51,"OSM shape, no number on PDF"
+osm-545388962,Brown 1,Brown,osm,676,OSM shape and name match PDF
+osm-545388932,Brown 10,Brown,osm,163,OSM shape and name match PDF
+osm-545010086,Brown 11,Brown,osm,550,OSM shape and name match PDF
+osm-545388931,Brown 12,Brown,osm,369,OSM shape and name match PDF
+osm-545388930,Brown 13,Brown,osm,561,OSM shape and name match PDF
+osm-545388955,Brown 14,Brown,osm,363,OSM shape and name match PDF
+osm-545388948,Brown 15,Brown,osm,377,OSM shape and name match PDF
+osm-545388947,Brown 16,Brown,osm,413,OSM shape and name match PDF
+osm-545010089,Brown 17,Brown,osm,377,OSM shape and name match PDF
+osm-545010087,Brown 18,Brown,osm,809,OSM shape and name match PDF
+osm-545388963,Brown 2,Brown,osm,370,OSM shape and name match PDF
+osm-545388961,Brown 3,Brown,osm,768,OSM shape and name match PDF
+osm-545388960,Brown 4,Brown,osm,458,OSM shape and name match PDF
+osm-545388958,Brown 5,Brown,osm,401,OSM shape and name match PDF
+osm-545388952,Brown 6,Brown,osm,597,OSM shape and name match PDF
+osm-545388957,Brown 7,Brown,osm,170,OSM shape and name match PDF
+osm-545388956,Brown 8,Brown,osm,184,OSM shape and name match PDF
+osm-545388954,Brown 9,Brown,osm,166,OSM shape and name match PDF
+osm-545010002,Green 2,Green,osm,1021,OSM shape and name match PDF
+osm-545010004,Green 4,Green,osm,1522,OSM shape and name match PDF
+osm-545010005,Green 5,Green,osm,555,OSM shape and name match PDF
+osm-1155699813,,Orange,osm,130,"OSM shape, no number on PDF"
+pdf-89,,Orange,pdf,100,traced from PDF colours (+/- 3-5 m)
+pdf-90,,Orange,pdf,128,traced from PDF colours (+/- 3-5 m)
+osm-545009973,Orange 1 & 2,Orange,osm,2033,"OSM shape, label read from PDF"
+osm-592219546,Orange 10,Orange,osm,605,OSM shape and name match PDF
+osm-233930542,Orange 11,Orange,osm,1476,OSM shape and name match PDF
+osm-233930539,Orange 12,Orange,osm,2551,OSM shape and name match PDF
+osm-545010129,Orange 3,Orange,osm,974,OSM shape and name match PDF
+osm-545009974,Orange 4,Orange,osm,2387,OSM shape and name match PDF
+osm-592218694,Orange 5,Orange,osm,246,OSM shape and name match PDF
+osm-545009993,Orange 6,Orange,osm,2190,OSM shape and name match PDF
+osm-545482246,Orange 7,Orange,osm,244,OSM shape and name match PDF
+osm-7890634,Orange 8,Orange,osm,988,OSM shape and name match PDF
+osm-545482247,Orange 9,Orange,osm,557,OSM shape and name match PDF
+osm-545010098,,Pink,osm,105,"OSM shape, no number on PDF"
+osm-545010146,,Pink,osm,550,"OSM shape, no number on PDF"
+osm-545010149,,Pink,osm,341,"OSM shape, no number on PDF"
+pdf-85,,Pink,pdf,214,traced from PDF colours (+/- 3-5 m)
+osm-545010138,Pink 1,Pink,osm,207,OSM name; PDF shows no number here - check on campus
+pdf-81,Pink 2,Pink,pdf,1432,traced from PDF colours (+/- 3-5 m)
+osm-545010145,Pink 3,Pink,osm,834,OSM shape and name match PDF
+osm-545010148,Pink 6,Pink,osm,450,"OSM shape, label read from PDF"
+osm-545010100,Pink 7,Pink,osm,1483,OSM shape and name match PDF
+osm-545010151,Pink 8,Pink,osm,340,OSM shape and name match PDF
+osm-545010154,Pink 9,Pink,osm,3526,"OSM shape, label read from PDF"
+pdf-86,,Purple,pdf,208,traced from PDF colours (+/- 3-5 m)
+pdf-87,,Purple,pdf,343,traced from PDF colours (+/- 3-5 m)
+pdf-88,,Purple,pdf,140,traced from PDF colours (+/- 3-5 m)
+osm-544531338,Purple 1,Purple,osm,1270,OSM shape and name match PDF
+osm-174692096,Purple 10,Purple,osm,2484,OSM shape and name match PDF
+osm-544531348,Purple 11,Purple,osm,2455,OSM shape and name match PDF
+osm-545010106,Purple 12,Purple,osm,1962,OSM shape and name match PDF
+osm-174692094,Purple 13,Purple,osm,1027,OSM shape and name match PDF
+osm-545010135,Purple 14,Purple,osm,502,OSM shape and name match PDF
+pdf-82,Purple 15,Purple,pdf,681,traced from PDF colours (+/- 3-5 m)
+pdf-83,Purple 16,Purple,pdf,194,traced from PDF colours (+/- 3-5 m)
+osm-544531340,Purple 2,Purple,osm,796,OSM shape and name match PDF
+osm-544531342,Purple 3,Purple,osm,1400,OSM shape and name match PDF
+osm-544531345,Purple 4,Purple,osm,1596,OSM shape and name match PDF
+osm-592007682,Purple 5,Purple,osm,1106,OSM shape and name match PDF
+osm-544531347,Purple 6,Purple,osm,1552,OSM shape and name match PDF
+osm-592004154,Purple 7,Purple,osm,952,OSM shape and name match PDF
+osm-592004151,Purple 8,Purple,osm,250,OSM shape and name match PDF
+osm-545010117,Purple 9,Purple,osm,1680,OSM shape and name match PDF
+osm-233930540,Red 1,Red,osm,2107,OSM shape and name match PDF
+osm-592220444,Red 2,Red,osm,1652,OSM shape and name match PDF
+osm-592220446,Red 3,Red,osm,549,OSM shape and name match PDF
+osm-592220445,Red 4,Red,osm,730,OSM shape and name match PDF
+osm-592219549,Red 5,Red,osm,163,OSM name; PDF shows no number here - check on campus
+osm-233930541,Red 6,Red,osm,2745,OSM shape and name match PDF
+osm-544753280,Red 7,Red,osm,859,OSM shape and name match PDF
+osm-544531349,Red 8,Red,osm,2681,OSM shape and name match PDF
+osm-544753307,Red 9,Red,osm,2115,OSM shape and name match PDF
+osm-544531350,Yellow 1,Yellow,osm,2002,OSM shape and name match PDF
+osm-545388925,Yellow 2,Yellow,osm,2523,OSM shape and name match PDF
+osm-592001467,Yellow 3,Yellow,osm,1314,OSM shape and name match PDF
+osm-545388927,Yellow 4,Yellow,osm,2532,OSM shape and name match PDF
