@@ -49,3 +49,8 @@ app.*.map.json
 
 # GDAL side files (created automatically next to images)
 *.aux.xml
+
+# Built app files (upload them to GitHub Releases, not to the code)
+/release/
+*.apk
+*.aab

@@ -1,0 +1,6 @@
+# Copy this file to android/key.properties and fill in your own values.
+# android/key.properties is git-ignored: never upload it or your .jks key file.
+storePassword=YOUR_KEYSTORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD
+keyAlias=cdunavigator
+storeFile=C:/Users/nabas/keys/cdu-navigator-release.jks

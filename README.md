@@ -9,6 +9,21 @@ follows you as you walk, counts down the distance and re-routes if you go the wr
 
 > Independent student project. Not an official app of, or endorsed by, Charles Darwin University.
 
+## Download (Android)
+
+Get the latest version from the
+[**Releases page**](https://github.com/nabajyoti007/CDU_Campus_Navigation/releases/latest):
+
+| File | For |
+|---|---|
+| `CDU-Campus-Navigator-vX.Y.Z-arm64.apk` | Almost all Android phones from 2017 onwards (**start here**) |
+| `CDU-Campus-Navigator-vX.Y.Z-older-phones.apk` | Older 32-bit Android phones |
+| `CDU-Campus-Navigator-vX.Y.Z-universal.apk` | Works on any Android phone (larger download) |
+
+To install: open the downloaded file on your phone and allow **"Install unknown apps"** when
+Android asks. Android 7.0 or newer. The app needs internet (for the street map) and location
+permission. iPhone is not supported yet.
+
 ## Features
 
 - **Campus map in the style of the official CDU map:** buildings in their precinct colours,
