@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 import '../data/campus_map_bounds.dart';
 import '../data/campus_repository.dart';
@@ -20,6 +21,14 @@ import '../widgets/route_panel.dart';
 import 'about_screen.dart';
 
 enum _Mode { browse, routes, navigating }
+
+/// Diagnostic messages in the browser console, only in test builds made with
+/// `--dart-define=CDU_DEBUG=true` (never in the published app).
+const bool _debugLogging = bool.fromEnvironment('CDU_DEBUG');
+void _debugLog(String message) {
+  // ignore: avoid_print
+  if (_debugLogging) print('[CDU] $message');
+}
 
 /// CDU Casuarina campus map with building search and walking directions.
 class CampusMapScreen extends StatefulWidget {
@@ -121,8 +130,9 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
 
   bool get _hasLocation => _position != null && _locationProblem == null;
 
-  LatLng? get _here =>
-      _position == null ? null : LatLng(_position!.latitude, _position!.longitude);
+  LatLng? get _here => _position == null
+      ? null
+      : LatLng(_position!.latitude, _position!.longitude);
 
   bool get _onCampus => _here != null && CampusMapBounds.contains(_here!);
 
@@ -165,7 +175,10 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     if (kIsWeb) {
       _layers?.showMyLocation(_here, _position?.accuracy ?? 10);
     }
-    if (!_centredOnMe && _onCampus && _selected == null && _mode == _Mode.browse) {
+    if (!_centredOnMe &&
+        _onCampus &&
+        _selected == null &&
+        _mode == _Mode.browse) {
       _centredOnMe = true;
       _followMe = true;
       _moveCameraTo(_here!, zoom: 17.3);
@@ -199,7 +212,9 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     if (c == null || !_layersReady || _mode == _Mode.navigating) return;
 
     if (_mode == _Mode.routes) {
-      final hits = await c.queryRenderedFeatures(point, [CampusLayers.routeAltLayer], null);
+      final hits = await c.queryRenderedFeatures(point, [
+        CampusLayers.routeAltLayer,
+      ], null);
       if (hits.isNotEmpty) {
         final idx = ((hits.first as Map)['properties'] as Map)['idx'];
         if (idx is num) await _selectRoute(idx.toInt());
@@ -207,7 +222,9 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       return;
     }
 
-    final hits = await c.queryRenderedFeatures(point, [CampusLayers.buildingsLayer], null);
+    final hits = await c.queryRenderedFeatures(point, [
+      CampusLayers.buildingsLayer,
+    ], null);
     if (hits.isEmpty) {
       await _clearSelection();
       return;
@@ -223,18 +240,23 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
 
   Future<void> _selectBuilding(CampusBuilding b) async {
     setState(() {
+      _followMe = false; // the user is looking at a building now
       _selected = b;
       _mode = _Mode.browse;
     });
     await _layers?.clearRoutes();
     await _layers?.highlight(b.id);
     final zoom = math.max(_map?.cameraPosition?.zoom ?? 17, 17.3);
-    await _map?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: b.centre,
-      zoom: zoom,
-      tilt: 0,
-      bearing: _map?.cameraPosition?.bearing ?? 0,
-    )));
+    await _map?.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: b.centre,
+          zoom: zoom,
+          tilt: 0,
+          bearing: _map?.cameraPosition?.bearing ?? 0,
+        ),
+      ),
+    );
   }
 
   Future<void> _clearSelection() async {
@@ -288,9 +310,11 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     final from = _routeStart;
     if (target == null) return;
     if (from == null) {
-      setState(() => _routeError = _locating
-          ? 'Finding your location… or choose a starting building above.'
-          : 'Your location is not available. Choose a starting building above.');
+      setState(
+        () => _routeError = _locating
+            ? 'Finding your location… or choose a starting building above.'
+            : 'Your location is not available. Choose a starting building above.',
+      );
       return;
     }
     try {
@@ -320,6 +344,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   }
 
   Future<void> _fitRoutes() async {
+    setState(() => _followMe = false);
     final pts = [for (final r in _routes) ...r.points, ?_routeStart];
     if (pts.isEmpty) return;
     var s = pts.first.latitude, n = s, w = pts.first.longitude, e = w;
@@ -329,13 +354,15 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       w = math.min(w, p.longitude);
       e = math.max(e, p.longitude);
     }
-    await _map?.animateCamera(CameraUpdate.newLatLngBounds(
-      LatLngBounds(southwest: LatLng(s, w), northeast: LatLng(n, e)),
-      left: 50,
-      top: 150,
-      right: 70,
-      bottom: 380,
-    ));
+    await _map?.animateCamera(
+      CameraUpdate.newLatLngBounds(
+        LatLngBounds(southwest: LatLng(s, w), northeast: LatLng(n, e)),
+        left: 50,
+        top: 150,
+        right: 70,
+        bottom: 380,
+      ),
+    );
   }
 
   Future<void> _changeStart() async {
@@ -349,9 +376,11 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
             ListTile(
               leading: const Icon(Icons.my_location),
               title: const Text('Your location'),
-              subtitle: Text(_hasLocation
-                  ? (_onCampus ? 'On campus' : 'Not on campus right now')
-                  : 'Location not available'),
+              subtitle: Text(
+                _hasLocation
+                    ? (_onCampus ? 'On campus' : 'Not on campus right now')
+                    : 'Location not available',
+              ),
               onTap: () => Navigator.pop(context, 'me'),
             ),
             ListTile(
@@ -382,7 +411,9 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       _routes.isNotEmpty && _fromBuilding == null && _hasLocation && _onCampus;
 
   String? get _startHint {
-    if (_fromBuilding != null) return 'Live directions start from your location.';
+    if (_fromBuilding != null) {
+      return 'Live directions start from your location.';
+    }
     if (!_hasLocation) return 'Live directions need your location.';
     if (!_onCampus) return 'Live directions work on campus.';
     return null;
@@ -404,14 +435,20 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       _routeIndex = 0;
     });
     await _drawRoutes();
-    await _map?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: _here!,
-      zoom: 18.3,
-      tilt: 0,
-      bearing: _position?.heading ?? 0,
-    )));
+    await _map?.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: _here!,
+          zoom: 18.3,
+          tilt: 0,
+          bearing: _position?.heading ?? 0,
+        ),
+      ),
+    );
     if (!kIsWeb) {
-      await _map?.updateMyLocationTrackingMode(MyLocationTrackingMode.trackingCompass);
+      await _map?.updateMyLocationTrackingMode(
+        MyLocationTrackingMode.trackingCompass,
+      );
     } else {
       setState(() => _followMe = true);
       _lastCameraTarget = _here;
@@ -475,21 +512,30 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     if (b != null) await _selectBuilding(b);
   }
 
-  static double _distance(LatLng a, LatLng b) =>
-      Geolocator.distanceBetween(a.latitude, a.longitude, b.latitude, b.longitude);
+  static double _distance(LatLng a, LatLng b) => Geolocator.distanceBetween(
+    a.latitude,
+    a.longitude,
+    b.latitude,
+    b.longitude,
+  );
 
   // ---------------------------------------------------------------------------
   // Camera buttons
   // ---------------------------------------------------------------------------
 
   Future<void> _showWholeCampus() async {
-    await _map?.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: CampusMapBounds.centre,
-      zoom: _campusZoom,
-    )));
+    setState(() => _followMe = false);
+    await _map?.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: CampusMapBounds.centre, zoom: _campusZoom),
+      ),
+    );
   }
 
   Future<void> _goToMyLocation() async {
+    _debugLog(
+      'location button: hasLocation=$_hasLocation here=$_here mode=$_mode',
+    );
     if (!_hasLocation) {
       if (_locationProblem != null) {
         await _fixLocationProblem();
@@ -499,13 +545,19 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       return;
     }
     if (_mode == _Mode.navigating && !kIsWeb) {
-      await _map?.updateMyLocationTrackingMode(MyLocationTrackingMode.trackingCompass);
+      await _map?.updateMyLocationTrackingMode(
+        MyLocationTrackingMode.trackingCompass,
+      );
       return;
     }
 
     // Start following straight away with the last fix, then refresh it.
     setState(() => _followMe = true);
-    await _moveCameraTo(_here!, zoom: 18, duration: const Duration(milliseconds: 900));
+    await _moveCameraTo(
+      _here!,
+      zoom: 18,
+      duration: const Duration(milliseconds: 900),
+    );
 
     final fresh = await _locationService.freshPosition();
     if (!mounted) return;
@@ -516,7 +568,8 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
 
     if (!_withinMapArea(_here!)) {
       setState(() => _followMe = false);
-      final km = (_distance(_here!, CampusMapBounds.centre) / 1000).toStringAsFixed(1);
+      final km = (_distance(_here!, CampusMapBounds.centre) / 1000)
+          .toStringAsFixed(1);
       _showMessage('You are $km km from CDU Casuarina campus.');
       await _showWholeCampus();
       return;
@@ -534,10 +587,14 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
 
   /// The map can show the campus plus about 3 km around it.
   static final LatLngBounds _mapArea = LatLngBounds(
-    southwest: LatLng(CampusMapBounds.bottomLeft.latitude - 0.027,
-        CampusMapBounds.bottomLeft.longitude - 0.027),
-    northeast: LatLng(CampusMapBounds.topRight.latitude + 0.027,
-        CampusMapBounds.topRight.longitude + 0.027),
+    southwest: LatLng(
+      CampusMapBounds.bottomLeft.latitude - 0.027,
+      CampusMapBounds.bottomLeft.longitude - 0.027,
+    ),
+    northeast: LatLng(
+      CampusMapBounds.topRight.latitude + 0.027,
+      CampusMapBounds.topRight.longitude + 0.027,
+    ),
   );
 
   static bool _withinMapArea(LatLng p) =>
@@ -558,8 +615,11 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     double? zoom,
     Duration duration = const Duration(milliseconds: 500),
   }) async {
+    _debugLog('move camera to $target zoom=$zoom');
     _lastCameraTarget = target;
-    _cameraBusyUntil = DateTime.now().add(duration + const Duration(milliseconds: 400));
+    _cameraBusyUntil = DateTime.now().add(
+      duration + const Duration(milliseconds: 400),
+    );
     await _map?.animateCamera(
       zoom == null
           ? CameraUpdate.newLatLng(target)
@@ -571,6 +631,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   /// Keeps the user in the middle while following, without interrupting a
   /// camera move that is still running and without moving for tiny changes.
   void _followTo(LatLng here) {
+    _debugLog('follow: busy=$_cameraBusy to=$here');
     if (_cameraBusy) return; // the next GPS update will catch up
     final last = _lastCameraTarget;
     if (last != null && _distance(last, here) < 2) return;
@@ -580,6 +641,11 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   /// When the camera stops far from where the app last put it, the user
   /// dragged the map: stop following.
   void _onCameraIdle() {
+    _debugLog(
+      'camera idle: follow=$_followMe busy=$_cameraBusy '
+      'camera=${_map?.cameraPosition?.target} zoom=${_map?.cameraPosition?.zoom} '
+      'last=$_lastCameraTarget',
+    );
     if (!_followMe || _lastCameraTarget == null || _cameraBusy) return;
     final now = _map?.cameraPosition?.target;
     if (now != null && _distance(now, _lastCameraTarget!) > 30) {
@@ -640,15 +706,20 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _SearchBar(
-                      onTap: _openSearch,
-                      onAbout: () => Navigator.of(context).push(
-                        MaterialPageRoute<void>(builder: (_) => const AboutScreen()),
+                    // On the web the map would otherwise take taps meant for these controls.
+                    PointerInterceptor(
+                      child: _SearchBar(
+                        onTap: _openSearch,
+                        onAbout: () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const AboutScreen(),
+                          ),
+                        ),
                       ),
                     ),
                     if (_statusChip() case final chip?) ...[
                       const SizedBox(height: 8),
-                      chip,
+                      PointerInterceptor(child: chip),
                     ],
                   ],
                 ),
@@ -665,16 +736,23 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
                   alignment: Alignment.centerRight,
                   // On the web the map credit line sits along the bottom edge.
                   padding: EdgeInsets.only(right: 14, bottom: kIsWeb ? 34 : 14),
-                  child: _MapButtons(
-                    hasLocation: _hasLocation,
-                    following: _followMe && _hasLocation,
-                    onWholeCampus: _showWholeCampus,
-                    onMyLocation: _goToMyLocation,
+                  child: PointerInterceptor(
+                    child: _MapButtons(
+                      hasLocation: _hasLocation,
+                      following: _followMe && _hasLocation,
+                      onWholeCampus: _showWholeCampus,
+                      onMyLocation: _goToMyLocation,
+                    ),
                   ),
                 ),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
-                  child: _bottomPanel() ?? const SizedBox.shrink(),
+                  child: _bottomPanel() == null
+                      ? const SizedBox.shrink()
+                      : PointerInterceptor(
+                          key: ValueKey(_mode.name + (_selected?.id ?? '')),
+                          child: _bottomPanel()!,
+                        ),
                 ),
               ],
             ),
@@ -725,10 +803,17 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   /// Small status line under the search bar, only when something needs attention.
   Widget? _statusChip() {
     if (_mapError != null) {
-      return _Chip(icon: Icons.error_outline, text: _mapError!, colour: Colors.red.shade700);
+      return _Chip(
+        icon: Icons.error_outline,
+        text: _mapError!,
+        colour: Colors.red.shade700,
+      );
     }
     if (_locating) {
-      return const _Chip(icon: Icons.gps_not_fixed, text: 'Finding your location…');
+      return const _Chip(
+        icon: Icons.gps_not_fixed,
+        text: 'Finding your location…',
+      );
     }
     if (_locationProblem != null) {
       final problem = LocationException(_locationProblem!);
@@ -737,19 +822,25 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
         text: problem.message,
         colour: Colors.red.shade700,
         action: problem.canOpenSettings ? 'Settings' : 'Try again',
-        onAction: problem.canOpenSettings ? _fixLocationProblem : _startLocation,
+        onAction: problem.canOpenSettings
+            ? _fixLocationProblem
+            : _startLocation,
       );
     }
     final acc = _position?.accuracy;
     if (!_onCampus) {
-      return const _Chip(icon: Icons.explore_off, text: 'You are not on campus right now');
+      return const _Chip(
+        icon: Icons.explore_off,
+        text: 'You are not on campus right now',
+      );
     }
     if (acc != null && acc > lowAccuracyMetres) {
       // The pale circle around the dot already shows the uncertainty; only
       // speak up when it is large, and say what helps.
       return _Chip(
         icon: Icons.gps_not_fixed,
-        text: 'Location accurate to ±${acc.round()} m. '
+        text:
+            'Location accurate to ±${acc.round()} m. '
             'Go outdoors or turn on precise location.',
         colour: Colors.orange.shade900,
       );
@@ -774,7 +865,9 @@ class _SearchBar extends StatelessWidget {
         children: [
           Expanded(
             child: InkWell(
-              borderRadius: const BorderRadius.horizontal(left: Radius.circular(28)),
+              borderRadius: const BorderRadius.horizontal(
+                left: Radius.circular(28),
+              ),
               onTap: onTap,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(18, 14, 8, 14),
@@ -786,9 +879,7 @@ class _SearchBar extends StatelessWidget {
                       child: Text(
                         'Search CDU — e.g. Red 6, Library',
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
+                        style: Theme.of(context).textTheme.bodyLarge
                             ?.copyWith(color: Colors.black54),
                       ),
                     ),
@@ -837,7 +928,9 @@ class _Chip extends StatelessWidget {
           children: [
             Icon(icon, size: 18, color: colour),
             const SizedBox(width: 8),
-            Flexible(child: Text(text, style: TextStyle(color: colour))),
+            Flexible(
+              child: Text(text, style: TextStyle(color: colour)),
+            ),
             if (action != null)
               TextButton(onPressed: onAction, child: Text(action!))
             else
@@ -886,8 +979,8 @@ class _MapButtons extends StatelessWidget {
             !hasLocation
                 ? Icons.location_disabled
                 : following
-                    ? Icons.my_location
-                    : Icons.location_searching,
+                ? Icons.my_location
+                : Icons.location_searching,
             color: following ? Colors.white : routeBlue,
           ),
         ),
