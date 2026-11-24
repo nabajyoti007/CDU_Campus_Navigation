@@ -104,6 +104,12 @@ ALIASES = {
     "Yellow 1": ["Northern Institute Savanna Room (Level 2)"],
 }
 
+# Every Brown precinct building is student accommodation run by Campus Living
+# Villages (CLV). Source: the project owner (CDU student), not the PDF.
+PRECINCT_ALIASES = {
+    "Brown": ["Student accommodation", "Campus Living Villages (CLV)"],
+}
+
 # Precinct name banners, at their pixel position on the PDF (cdu_campus_map_3857.tif)
 PRECINCT_BANNERS = [
     ("Yellow", 918, 400), ("Pink", 728, 591), ("Red", 1326, 822), ("Brown", 1661, 240),
@@ -178,7 +184,7 @@ def main():
             "height": display_height(a, levels, precinct, label),
             "source": source,
             "underConstruction": under_construction,
-            "aliases": ALIASES.get(label, []),
+            "aliases": ALIASES.get(label, []) + PRECINCT_ALIASES.get(precinct, []),
         }
         buildings.append({"type": "Feature", "id": props["id"], "properties": props,
                           "geometry": to_geojson_geometry(geom)})

@@ -43,6 +43,16 @@ void main() {
     expect(repo.searchAll('red 6').map((d) => d.title), contains('Red 6'));
   });
 
+  test('Brown buildings are found as CLV student accommodation', () {
+    for (final q in ['accommodation', 'clv', 'campus living']) {
+      final found = repo.searchAll(q).map((d) => d.title).toList();
+      expect(found, contains('Brown 18'), reason: q);
+      expect(found.every((t) => t.startsWith('Brown')), isTrue, reason: q);
+    }
+    final brown6 = repo.searchAll('brown 6').first;
+    expect(brown6.subtitle, contains('Campus Living Villages (CLV)'));
+  });
+
   test('nearest toilets are sorted by distance', () {
     final here = repo.buildings.values.firstWhere((b) => b.label == 'Red 6').centre;
     final list = repo.placesOf('toilets', from: here);
