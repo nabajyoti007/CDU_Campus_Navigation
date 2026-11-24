@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/campus_building.dart';
+import '../models/destination.dart';
 import '../services/campus_router.dart';
 import 'building_card.dart';
 import 'colours.dart';
@@ -22,7 +22,7 @@ class RoutePanel extends StatelessWidget {
     required this.onClose,
   });
 
-  final CampusBuilding destination;
+  final Destination destination;
   final String fromLabel;
   final List<WalkRoute> routes;
   final int selected;
@@ -47,9 +47,12 @@ class RoutePanel extends StatelessWidget {
               const Icon(Icons.directions_walk, color: routeBlue),
               const SizedBox(width: 8),
               Expanded(
-                child: Text('Walk to ${destination.title}',
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.bold)),
+                child: Text(
+                  'Walk to ${destination.title}',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               IconButton(onPressed: onClose, icon: const Icon(Icons.close)),
             ],
@@ -65,9 +68,12 @@ class RoutePanel extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text('From: ', style: theme.textTheme.bodyMedium),
                   Flexible(
-                    child: Text(fromLabel,
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w600)),
+                    child: Text(
+                      fromLabel,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                   const Icon(Icons.arrow_drop_down),
                 ],
@@ -78,7 +84,10 @@ class RoutePanel extends StatelessWidget {
           if (error != null)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(error!, style: TextStyle(color: theme.colorScheme.error)),
+              child: Text(
+                error!,
+                style: TextStyle(color: theme.colorScheme.error),
+              ),
             )
           else if (routes.isEmpty)
             const Padding(
@@ -106,14 +115,19 @@ class RoutePanel extends StatelessWidget {
                   onPressed: canStart ? onStart : null,
                   style: FilledButton.styleFrom(
                     backgroundColor: routeBlue,
-                    padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 26,
+                      vertical: 12,
+                    ),
                   ),
                   icon: const Icon(Icons.navigation),
                   label: const Text('Start'),
                 ),
                 const SizedBox(width: 12),
                 if (!canStart && startHint != null)
-                  Expanded(child: Text(startHint!, style: theme.textTheme.bodySmall)),
+                  Expanded(
+                    child: Text(startHint!, style: theme.textTheme.bodySmall),
+                  ),
               ],
             ),
           ],
@@ -142,7 +156,9 @@ class _RouteTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6, right: 8),
       child: Material(
-        color: selected ? const Color(0xFFE8F0FE) : theme.colorScheme.surfaceContainerHighest,
+        color: selected
+            ? const Color(0xFFE8F0FE)
+            : theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
@@ -166,11 +182,18 @@ class _RouteTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Text(formatDistance(route.distance), style: theme.textTheme.bodyMedium),
+                Text(
+                  formatDistance(route.distance),
+                  style: theme.textTheme.bodyMedium,
+                ),
                 const Spacer(),
                 if (recommended)
-                  Text('Recommended',
-                      style: theme.textTheme.labelMedium?.copyWith(color: routeBlue)),
+                  Text(
+                    'Recommended',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: routeBlue,
+                    ),
+                  ),
               ],
             ),
           ),

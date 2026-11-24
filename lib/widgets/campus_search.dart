@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 
 import '../data/campus_repository.dart';
-import '../models/campus_building.dart';
-import 'colours.dart';
+import '../models/destination.dart';
+import 'building_card.dart';
 
-/// Full-screen building search ("Red 6", "library", "blue 2", ...).
-class CampusSearchDelegate extends SearchDelegate<CampusBuilding?> {
-  CampusSearchDelegate(this.campus) : super(searchFieldLabel: 'Search CDU buildings');
+/// Full-screen search over buildings and places:
+/// "Red 6", "library", "toilet", "coffee", "theatre", "bus" ...
+class CampusSearchDelegate extends SearchDelegate<Destination?> {
+  CampusSearchDelegate(
+    this.campus, {
+    String label = 'Search buildings and places',
+  }) : super(searchFieldLabel: label);
 
   final CampusRepository campus;
 
   @override
   List<Widget> buildActions(BuildContext context) => [
-        if (query.isNotEmpty)
-          IconButton(icon: const Icon(Icons.clear), onPressed: () => query = ''),
-      ];
+    if (query.isNotEmpty)
+      IconButton(icon: const Icon(Icons.clear), onPressed: () => query = ''),
+  ];
 
   @override
   Widget buildLeading(BuildContext context) =>
@@ -27,37 +31,25 @@ class CampusSearchDelegate extends SearchDelegate<CampusBuilding?> {
   Widget buildSuggestions(BuildContext context) => _list(context);
 
   Widget _list(BuildContext context) {
-    final results = campus.search(query);
+    final results = campus.searchAll(query);
     if (results.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(24),
-        child: Text('No building with that name on the CDU map.'),
+        child: Text(
+          'Nothing with that name on the CDU map. Try a building '
+          '(e.g. "Red 6") or a place (e.g. "toilets", "library", "food").',
+        ),
       );
     }
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (context, i) {
-        final b = results[i];
+        final d = results[i];
         return ListTile(
-          leading: CircleAvatar(
-            backgroundColor: hexColour(b.colourHex),
-            child: Text(
-              b.label.split(' ').last,
-              style: TextStyle(
-                color: onColour(b.colourHex),
-                fontWeight: FontWeight.bold,
-                fontSize: 13,
-              ),
-            ),
-          ),
-          title: Text(b.label),
-          subtitle: b.aliases.isEmpty && !b.underConstruction
-              ? Text('${b.precinct} precinct')
-              : Text([
-                  ...b.aliases,
-                  if (b.underConstruction) 'Under construction',
-                ].join(' · ')),
-          onTap: () => close(context, b),
+          leading: DestinationBadge(destination: d),
+          title: Text(d.title),
+          subtitle: d.subtitle.isEmpty ? null : Text(d.subtitle),
+          onTap: () => close(context, d),
         );
       },
     );

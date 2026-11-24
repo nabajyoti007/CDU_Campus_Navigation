@@ -58,7 +58,8 @@ bool shouldUsePosition(
 }) {
   if (current == null) return true;
   final muchWorse = next.accuracy > 30 && next.accuracy > current.accuracy * 2;
-  final currentIsRecent = next.timestamp.difference(current.timestamp) < staleAfter;
+  final currentIsRecent =
+      next.timestamp.difference(current.timestamp) < staleAfter;
   return !(muchWorse && currentIsRecent);
 }
 
@@ -87,14 +88,14 @@ class LocationService {
     }
 
     return Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.best,
-      ),
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.best),
     );
   }
 
   /// A fresh GPS fix right now, or null if the phone can't get one within [timeLimit].
-  Future<Position?> freshPosition({Duration timeLimit = const Duration(seconds: 6)}) async {
+  Future<Position?> freshPosition({
+    Duration timeLimit = const Duration(seconds: 6),
+  }) async {
     try {
       return await Geolocator.getCurrentPosition(
         locationSettings: LocationSettings(
@@ -113,9 +114,7 @@ class LocationService {
       distanceFilter: 2,
     );
 
-    return Geolocator.getPositionStream(
-      locationSettings: settings,
-    );
+    return Geolocator.getPositionStream(locationSettings: settings);
   }
 
   Future<bool> openLocationSettings() => Geolocator.openLocationSettings();

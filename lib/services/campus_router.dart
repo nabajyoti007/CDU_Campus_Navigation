@@ -72,6 +72,29 @@ class CampusRouter {
     if (targets == null || targets.isEmpty) {
       throw RouteException('No campus path reaches this building.');
     }
+    return _routesTo(from, targets, maxRoutes);
+  }
+
+  /// Routes from [from] to an outdoor point (a garden, a bus stop ...): the
+  /// point is joined to the nearest path, and the last bit is drawn dotted.
+  List<WalkRoute> routesToPoint(LatLng from, LatLng to, {int maxRoutes = 3}) {
+    final snap = graph.snap(to);
+    if (snap.distance > 150) {
+      throw RouteException('That place is too far from the campus paths.');
+    }
+    final e = graph.edges[snap.edge];
+    final targets = [
+      AccessPoint(e.a, to, snap.distance + e.length * snap.t),
+      AccessPoint(e.b, to, snap.distance + e.length * (1 - snap.t)),
+    ];
+    return _routesTo(from, targets, maxRoutes);
+  }
+
+  List<WalkRoute> _routesTo(
+    LatLng from,
+    List<AccessPoint> targets,
+    int maxRoutes,
+  ) {
     final snap = graph.snap(from);
     if (snap.distance > maxStartGap) {
       throw RouteException(
@@ -102,7 +125,11 @@ class CampusRouter {
     return found;
   }
 
-  WalkRoute? _shortest(SnapResult snap, List<AccessPoint> targets, List<double> penalty) {
+  WalkRoute? _shortest(
+    SnapResult snap,
+    List<AccessPoint> targets,
+    List<double> penalty,
+  ) {
     final n = graph.nodes.length;
     final cost = List<double>.filled(n, double.infinity);
     final prevEdge = List<int>.filled(n, -1);
@@ -116,15 +143,24 @@ class CampusRouter {
     heap.push(startEdge.a, cost[startEdge.a]);
     heap.push(startEdge.b, cost[startEdge.b]);
 
-    final targetNodes = {for (final t in targets) t.node: t};
+    // Several arrival points, each with its own last stretch (gap) to the
+    // destination: keep searching until no cheaper total is possible.
+    final targetNodes = <int, AccessPoint>{};
+    for (final t in targets) {
+      final old = targetNodes[t.node];
+      if (old == null || t.gap < old.gap) targetNodes[t.node] = t;
+    }
     int? reached;
+    var bestTotal = double.infinity;
     while (heap.isNotEmpty) {
       final u = heap.pop();
       if (done[u]) continue;
       done[u] = true;
-      if (targetNodes.containsKey(u)) {
+      if (cost[u] >= bestTotal) break;
+      final t = targetNodes[u];
+      if (t != null && cost[u] + t.gap < bestTotal) {
+        bestTotal = cost[u] + t.gap;
         reached = u;
-        break;
       }
       for (final ei in graph.adjacency[u]) {
         final e = graph.edges[ei];

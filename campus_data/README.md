@@ -51,6 +51,23 @@ from `assets/campus/`:
 OSM data (`osm/campus_osm.json`) was downloaded from the Overpass API on 4 Nov 2026 and is © OpenStreetMap
 contributors, ODbL. The street base map in the app is OpenFreeMap "Liberty" (needs internet).
 
+## Places (toilets, food, library, theatre, gardens …)
+
+`python campus_data/scripts/build_places.py` builds `assets/campus/places.geojson` from:
+
+- **PDF icons**: `pdf_icons.py` finds every facility icon on the PDF (toilets, food, ATM, post
+  office, security, parents & carers rooms, taxi, information, car parks) by matching them
+  against the icons in the PDF's key, then places them with the georeferencing control points.
+- **PDF inset**: names the Open Day inset points at a building: Library (Red 8),
+  Mal Nairn Auditorium (Red 7), CDU Services and Gulwa – The Austin Asche Hall (Red 2),
+  Nan Giese Gallery (Orange 10), Northern Editions Gallery (Orange 9),
+  Northern Institute Savanna Room (Yellow 1, level 2). Open Day-only items (marquees,
+  food vendors, Welcome Hub) are left out.
+- **PDF labels**: Boab Court, The Mall, The Strand, Chinese Garden, Student Square, Sports Oval.
+- **OpenStreetMap**: bus stops with their names, car park names (`osm/campus_pois_osm.json`).
+- **You**: `campus_data/manual_places.json` for places neither source has, e.g. the
+  **bookshop** or named cafés. Add them there and re-run the script.
+
 ## Known differences between the PDF and OpenStreetMap
 
 The PDF is the source for names and layout. OSM was used only for alignment.

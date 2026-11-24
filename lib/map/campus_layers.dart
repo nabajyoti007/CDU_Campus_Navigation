@@ -1,7 +1,9 @@
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../data/campus_repository.dart';
+import '../models/place_category.dart';
 import '../services/campus_router.dart';
+import 'place_icons.dart';
 
 /// Map style and layers: a flat, real street map with the CDU campus drawn
 /// in the style of the official CDU map (Aug 2024 PDF).
@@ -19,6 +21,7 @@ class CampusLayers {
 
   static const buildingsLayer = 'cdu-buildings-fill';
   static const routeAltLayer = 'cdu-route-alt';
+  static const placeLayers = ['cdu-places-major', 'cdu-places-minor'];
   static const _selectedLayer = 'cdu-buildings-selected';
 
   static const _areas = 'cdu-areas';
@@ -28,6 +31,7 @@ class CampusLayers {
   static const _route = 'cdu-route';
   static const _routeEnds = 'cdu-route-ends';
   static const _me = 'cdu-me';
+  static const _places = 'cdu-places';
 
   static const _emptyCollection = {'type': 'FeatureCollection', 'features': []};
 
@@ -40,24 +44,61 @@ class CampusLayers {
     }
 
     await controller.addGeoJsonSource(_areas, campus.areasGeoJson!);
-    await controller.addGeoJsonSource(_paths, campus.pathsGeoJson!, promoteId: 'id');
-    await controller.addGeoJsonSource(_buildings, campus.buildingsGeoJson!, promoteId: 'id');
-    await controller.addGeoJsonSource(_labels, campus.labelsGeoJson!, promoteId: 'id');
+    await controller.addGeoJsonSource(
+      _paths,
+      campus.pathsGeoJson!,
+      promoteId: 'id',
+    );
+    await controller.addGeoJsonSource(
+      _buildings,
+      campus.buildingsGeoJson!,
+      promoteId: 'id',
+    );
+    await controller.addGeoJsonSource(
+      _labels,
+      campus.labelsGeoJson!,
+      promoteId: 'id',
+    );
     await controller.addGeoJsonSource(_route, _emptyCollection);
     await controller.addGeoJsonSource(_routeEnds, _emptyCollection);
     await controller.addGeoJsonSource(_me, _emptyCollection);
+    await controller.addGeoJsonSource(
+      _places,
+      campus.placesGeoJson!,
+      promoteId: 'id',
+    );
+    for (final e in (await PlaceIcons.render()).entries) {
+      await controller.addImage(e.key, e.value);
+    }
 
     // 1. Precinct ground colours from the CDU map, under the roads.
     const areaProps = FillLayerProperties(
       fillColor: ['get', 'colour'],
-      fillOpacity: ['interpolate', ['linear'], ['zoom'], 14, 0.35, 17, 0.7],
+      fillOpacity: [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        14,
+        0.5,
+        17,
+        0.85,
+      ],
     );
     try {
-      await controller.addFillLayer(_areas, 'cdu-areas-fill', areaProps,
-          belowLayerId: 'waterway_tunnel', enableInteraction: false);
+      await controller.addFillLayer(
+        _areas,
+        'cdu-areas-fill',
+        areaProps,
+        belowLayerId: 'waterway_tunnel',
+        enableInteraction: false,
+      );
     } catch (_) {
-      await controller.addFillLayer(_areas, 'cdu-areas-fill', areaProps,
-          enableInteraction: false);
+      await controller.addFillLayer(
+        _areas,
+        'cdu-areas-fill',
+        areaProps,
+        enableInteraction: false,
+      );
     }
 
     // 2. Footpaths: white with a soft edge, as on the printed map.
@@ -65,8 +106,18 @@ class CampusLayers {
       _paths,
       'cdu-paths-casing',
       const LineLayerProperties(
-        lineColor: '#CFC8DF',
-        lineWidth: ['interpolate', ['linear'], ['zoom'], 15, 2.5, 19, 10.0],
+        lineColor: '#9F96BE',
+        lineWidth: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          14.5,
+          2.0,
+          16,
+          4.0,
+          19,
+          13.0,
+        ],
         lineCap: 'round',
         lineJoin: 'round',
       ),
@@ -77,7 +128,17 @@ class CampusLayers {
       'cdu-paths-line',
       const LineLayerProperties(
         lineColor: '#FFFFFF',
-        lineWidth: ['interpolate', ['linear'], ['zoom'], 15, 1.2, 19, 7.0],
+        lineWidth: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          14.5,
+          1.0,
+          16,
+          2.4,
+          19,
+          9.0,
+        ],
         lineCap: 'round',
         lineJoin: 'round',
       ),
@@ -106,7 +167,15 @@ class CampusLayers {
       'cdu-buildings-edge',
       const LineLayerProperties(
         lineColor: ['get', 'outline'],
-        lineWidth: ['interpolate', ['linear'], ['zoom'], 15, 0.5, 19, 2.0],
+        lineWidth: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15,
+          0.5,
+          19,
+          2.0,
+        ],
       ),
       enableInteraction: false,
     );
@@ -116,10 +185,22 @@ class CampusLayers {
       _selectedLayer,
       const LineLayerProperties(
         lineColor: '#211858',
-        lineWidth: ['interpolate', ['linear'], ['zoom'], 15, 2.5, 19, 6.0],
+        lineWidth: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15,
+          2.5,
+          19,
+          6.0,
+        ],
         lineJoin: 'round',
       ),
-      filter: ['==', ['get', 'id'], ''],
+      filter: [
+        '==',
+        ['get', 'id'],
+        '',
+      ],
       enableInteraction: false,
     );
 
@@ -129,11 +210,31 @@ class CampusLayers {
       routeAltLayer,
       const LineLayerProperties(
         lineColor: '#9AA6B4',
-        lineWidth: ['interpolate', ['linear'], ['zoom'], 15, 4.0, 19, 12.0],
+        lineWidth: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15,
+          4.0,
+          19,
+          12.0,
+        ],
         lineCap: 'round',
         lineJoin: 'round',
       ),
-      filter: ['all', ['==', ['get', 'kind'], 'route'], ['==', ['get', 'selected'], false]],
+      filter: [
+        'all',
+        [
+          '==',
+          ['get', 'kind'],
+          'route',
+        ],
+        [
+          '==',
+          ['get', 'selected'],
+          false,
+        ],
+      ],
       enableInteraction: false,
     );
     await controller.addLineLayer(
@@ -141,11 +242,31 @@ class CampusLayers {
       'cdu-route-casing',
       const LineLayerProperties(
         lineColor: '#1A56C7',
-        lineWidth: ['interpolate', ['linear'], ['zoom'], 15, 6.0, 19, 15.0],
+        lineWidth: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15,
+          6.0,
+          19,
+          15.0,
+        ],
         lineCap: 'round',
         lineJoin: 'round',
       ),
-      filter: ['all', ['==', ['get', 'kind'], 'route'], ['==', ['get', 'selected'], true]],
+      filter: [
+        'all',
+        [
+          '==',
+          ['get', 'kind'],
+          'route',
+        ],
+        [
+          '==',
+          ['get', 'selected'],
+          true,
+        ],
+      ],
       enableInteraction: false,
     );
     await controller.addLineLayer(
@@ -153,11 +274,31 @@ class CampusLayers {
       'cdu-route-line',
       const LineLayerProperties(
         lineColor: '#4C8DF6',
-        lineWidth: ['interpolate', ['linear'], ['zoom'], 15, 3.5, 19, 10.0],
+        lineWidth: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15,
+          3.5,
+          19,
+          10.0,
+        ],
         lineCap: 'round',
         lineJoin: 'round',
       ),
-      filter: ['all', ['==', ['get', 'kind'], 'route'], ['==', ['get', 'selected'], true]],
+      filter: [
+        'all',
+        [
+          '==',
+          ['get', 'kind'],
+          'route',
+        ],
+        [
+          '==',
+          ['get', 'selected'],
+          true,
+        ],
+      ],
       enableInteraction: false,
     );
     await controller.addLineLayer(
@@ -165,60 +306,103 @@ class CampusLayers {
       'cdu-route-connector',
       const LineLayerProperties(
         lineColor: '#1A56C7',
-        lineWidth: ['interpolate', ['linear'], ['zoom'], 15, 2.0, 19, 5.0],
+        lineWidth: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15,
+          2.0,
+          19,
+          5.0,
+        ],
         lineDasharray: [0.6, 1.8],
         lineCap: 'round',
       ),
-      filter: ['==', ['get', 'kind'], 'connector'],
+      filter: [
+        '==',
+        ['get', 'kind'],
+        'connector',
+      ],
       enableInteraction: false,
     );
     await controller.addCircleLayer(
       _routeEnds,
       'cdu-route-ends',
       const CircleLayerProperties(
-        circleRadius: ['interpolate', ['linear'], ['zoom'], 15, 5.0, 19, 10.0],
-        circleColor: ['match', ['get', 'kind'], 'start', '#FFFFFF', '#EA4335'],
-        circleStrokeColor: ['match', ['get', 'kind'], 'start', '#1A56C7', '#FFFFFF'],
+        circleRadius: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15,
+          5.0,
+          19,
+          10.0,
+        ],
+        circleColor: [
+          'match',
+          ['get', 'kind'],
+          'start',
+          '#FFFFFF',
+          '#EA4335',
+        ],
+        circleStrokeColor: [
+          'match',
+          ['get', 'kind'],
+          'start',
+          '#1A56C7',
+          '#FFFFFF',
+        ],
         circleStrokeWidth: 3,
       ),
       enableInteraction: false,
     );
 
     // 5. Labels.
-    // Place names from the PDF (Boab Court, The Mall, ...).
-    await controller.addSymbolLayer(
-      _labels,
-      'cdu-area-labels',
-      const SymbolLayerProperties(
-        textField: ['upcase', ['get', 'label']],
-        textFont: ['Noto Sans Bold'],
-        textSize: ['interpolate', ['linear'], ['zoom'], 15.5, 9, 18, 13],
-        textLetterSpacing: 0.05,
-        textColor: '#3D3760',
-        textHaloColor: '#FFFFFF',
-        textHaloWidth: 1.2,
-      ),
-      filter: ['==', ['get', 'kind'], 'area'],
-      minzoom: 16,
-      enableInteraction: false,
-    );
     // Building numbers printed on the buildings, like the PDF; full name ("Red 6") when close.
     await controller.addSymbolLayer(
       _labels,
       'cdu-building-labels',
       const SymbolLayerProperties(
         textField: [
-          'step', ['zoom'], ['get', 'number'], 18, ['get', 'label'],
+          'step',
+          ['zoom'],
+          ['get', 'number'],
+          18,
+          ['get', 'label'],
         ],
         textFont: ['Noto Sans Bold'],
-        textSize: ['interpolate', ['linear'], ['zoom'], 15.5, 10, 17.5, 15, 19, 16],
-        textColor: ['match', ['get', 'precinct'], 'Yellow', '#211858', '#FFFFFF'],
+        textSize: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15.5,
+          10,
+          17.5,
+          15,
+          19,
+          16,
+        ],
+        textColor: [
+          'match',
+          ['get', 'precinct'],
+          'Yellow',
+          '#211858',
+          '#FFFFFF',
+        ],
         textHaloColor: 'rgba(0,0,0,0.35)',
         textHaloWidth: 0.8,
         textPadding: 1,
-        symbolSortKey: ['-', 0, ['get', 'area']],
+        symbolSortKey: [
+          '-',
+          0,
+          ['get', 'area'],
+        ],
       ),
-      filter: ['==', ['get', 'kind'], 'building'],
+      filter: [
+        '==',
+        ['get', 'kind'],
+        'building',
+      ],
       minzoom: 15.6,
       enableInteraction: false,
     );
@@ -229,14 +413,125 @@ class CampusLayers {
       const SymbolLayerProperties(
         textField: ['get', 'label'],
         textFont: ['Noto Sans Bold'],
-        textSize: ['interpolate', ['linear'], ['zoom'], 14.5, 10, 17, 14],
-        textColor: ['match', ['get', 'precinct'], 'Yellow', '#211858', '#FFFFFF'],
+        textSize: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          14.5,
+          10,
+          17,
+          14,
+        ],
+        textColor: [
+          'match',
+          ['get', 'precinct'],
+          'Yellow',
+          '#211858',
+          '#FFFFFF',
+        ],
         textHaloColor: ['get', 'colour'],
         textHaloWidth: 5,
         textAllowOverlap: false,
       ),
-      filter: ['==', ['get', 'kind'], 'precinct'],
+      filter: [
+        '==',
+        ['get', 'kind'],
+        'precinct',
+      ],
       maxzoom: 17.5,
+      enableInteraction: false,
+    );
+
+    // Places (toilets, food, library, theatre, gardens ...).
+    // Named destinations: from further out, with their name; the marker
+    // stands just above the spot so the building number stays readable.
+    final majorIds = [
+      for (final c in PlaceCategory.all)
+        if (c.major) c.id,
+    ];
+    await controller.addSymbolLayer(
+      _places,
+      placeLayers[0],
+      const SymbolLayerProperties(
+        iconImage: [
+          'concat',
+          'poi-',
+          ['get', 'category'],
+        ],
+        iconSize: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15,
+          0.3,
+          17,
+          0.42,
+          19,
+          0.5,
+        ],
+        iconAnchor: 'bottom',
+        iconAllowOverlap: true,
+        textField: ['get', 'name'],
+        textFont: ['Noto Sans Bold'],
+        textSize: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          15.5,
+          10,
+          18,
+          13,
+        ],
+        textAnchor: 'left',
+        textOffset: [1.3, -1.4],
+        textMaxWidth: 9,
+        textColor: '#211858',
+        textHaloColor: '#FFFFFF',
+        textHaloWidth: 1.6,
+        textOptional: true,
+      ),
+      filter: [
+        'in',
+        ['get', 'category'],
+        ['literal', majorIds],
+      ],
+      minzoom: 15.2,
+      enableInteraction: false,
+    );
+    // Facilities like on the PDF (blue squares): when zoomed in; they never
+    // hide building numbers.
+    await controller.addSymbolLayer(
+      _places,
+      placeLayers[1],
+      const SymbolLayerProperties(
+        iconImage: [
+          'concat',
+          'poi-',
+          ['get', 'category'],
+        ],
+        iconSize: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          16.2,
+          0.24,
+          18,
+          0.36,
+          19,
+          0.42,
+        ],
+        iconAllowOverlap: true,
+        iconIgnorePlacement: true,
+      ),
+      filter: [
+        '!',
+        [
+          'in',
+          ['get', 'category'],
+          ['literal', majorIds],
+        ],
+      ],
+      minzoom: 16.2,
       enableInteraction: false,
     );
 
@@ -248,9 +543,21 @@ class CampusLayers {
       'cdu-me-accuracy',
       const CircleLayerProperties(
         circleRadius: [
-          'interpolate', ['exponential', 2], ['zoom'],
-          10, ['*', ['get', 'accuracy'], 0.0066966],
-          22, ['*', ['get', 'accuracy'], 27.4297],
+          'interpolate',
+          ['exponential', 2],
+          ['zoom'],
+          10,
+          [
+            '*',
+            ['get', 'accuracy'],
+            0.0066966,
+          ],
+          22,
+          [
+            '*',
+            ['get', 'accuracy'],
+            27.4297,
+          ],
         ],
         circleColor: '#1A73E8',
         circleOpacity: 0.15,
@@ -273,12 +580,18 @@ class CampusLayers {
     );
   }
 
-  Future<void> highlight(String? buildingId) => controller.setFilter(
-        _selectedLayer,
-        ['==', ['get', 'id'], buildingId ?? ''],
-      );
+  Future<void> highlight(String? buildingId) =>
+      controller.setFilter(_selectedLayer, [
+        '==',
+        ['get', 'id'],
+        buildingId ?? '',
+      ]);
 
-  Future<void> showRoutes(List<WalkRoute> routes, int selected, {LatLng? from}) async {
+  Future<void> showRoutes(
+    List<WalkRoute> routes,
+    int selected, {
+    LatLng? from,
+  }) async {
     final features = <Map<String, dynamic>>[];
     // Alternatives first, chosen route last (drawn on top).
     final order = [
@@ -287,7 +600,13 @@ class CampusLayers {
       if (routes.isNotEmpty) selected,
     ];
     for (final i in order) {
-      features.add(_line(routes[i].points, {'kind': 'route', 'idx': i, 'selected': i == selected}));
+      features.add(
+        _line(routes[i].points, {
+          'kind': 'route',
+          'idx': i,
+          'selected': i == selected,
+        }),
+      );
     }
     if (routes.isNotEmpty) {
       final r = routes[selected];
@@ -296,13 +615,19 @@ class CampusLayers {
         features.add(_line([from, r.points.first], {'kind': 'connector'}));
       }
     }
-    await controller.setGeoJsonSource(_route, {'type': 'FeatureCollection', 'features': features});
+    await controller.setGeoJsonSource(_route, {
+      'type': 'FeatureCollection',
+      'features': features,
+    });
 
     final ends = <Map<String, dynamic>>[
       if (routes.isNotEmpty) _point(routes[selected].door, {'kind': 'end'}),
       if (routes.isNotEmpty && from != null) _point(from, {'kind': 'start'}),
     ];
-    await controller.setGeoJsonSource(_routeEnds, {'type': 'FeatureCollection', 'features': ends});
+    await controller.setGeoJsonSource(_routeEnds, {
+      'type': 'FeatureCollection',
+      'features': ends,
+    });
   }
 
   /// Draws (or moves) the "you are here" dot. Pass null to hide it.
@@ -310,7 +635,17 @@ class CampusLayers {
       controller.setGeoJsonSource(_me, {
         'type': 'FeatureCollection',
         'features': [
-          if (here != null) _point(here, {'accuracy': accuracyMetres.clamp(3, 200)}),
+          if (here != null)
+            _point(here, {'accuracy': accuracyMetres.clamp(3, 200)}),
+        ],
+      });
+
+  /// Red pin on a selected place (pass null to remove it).
+  Future<void> showSelectedPoint(LatLng? p) =>
+      controller.setGeoJsonSource(_routeEnds, {
+        'type': 'FeatureCollection',
+        'features': [
+          if (p != null) _point(p, {'kind': 'end'}),
         ],
       });
 
@@ -319,18 +654,26 @@ class CampusLayers {
     await controller.setGeoJsonSource(_routeEnds, _emptyCollection);
   }
 
-  static Map<String, dynamic> _line(List<LatLng> pts, Map<String, dynamic> props) => {
-        'type': 'Feature',
-        'properties': props,
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': [for (final p in pts) [p.longitude, p.latitude]],
-        },
-      };
+  static Map<String, dynamic> _line(
+    List<LatLng> pts,
+    Map<String, dynamic> props,
+  ) => {
+    'type': 'Feature',
+    'properties': props,
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        for (final p in pts) [p.longitude, p.latitude],
+      ],
+    },
+  };
 
   static Map<String, dynamic> _point(LatLng p, Map<String, dynamic> props) => {
-        'type': 'Feature',
-        'properties': props,
-        'geometry': {'type': 'Point', 'coordinates': [p.longitude, p.latitude]},
-      };
+    'type': 'Feature',
+    'properties': props,
+    'geometry': {
+      'type': 'Point',
+      'coordinates': [p.longitude, p.latitude],
+    },
+  };
 }

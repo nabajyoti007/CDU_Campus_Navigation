@@ -41,13 +41,11 @@
     /* Duplicate "my location" button. The blue location dot itself stays. */
     .maplibregl-ctrl-geolocate { display: none !important; }
     .maplibregl-ctrl-group:has(> .maplibregl-ctrl-geolocate:only-child) { display: none !important; }
-    /* Compass: bottom-left above the credit, clear of the search bar and messages. */
-    .maplibregl-ctrl-top-right {
-      top: auto !important; right: auto !important;
-      bottom: 34px !important; left: 4px !important;
-    }
-    /* Map credit (required): bottom-left, away from the app's buttons. */
-    .maplibregl-ctrl-bottom-right { right: auto !important; left: 0 !important; }
+    /* Compass: not needed on the web (the map stays north-up); it would sit
+       on top of the bottom card. */
+    .maplibregl-ctrl-top-right { display: none !important; }
+    /* Map credit (required) stays in the bottom-right corner, below the app's
+       buttons and clear of the card's Directions button. */
   </style>
   <link rel="manifest" href="manifest.json">
 </head>

@@ -10,13 +10,15 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 import '../data/campus_map_bounds.dart';
 import '../data/campus_repository.dart';
 import '../map/campus_layers.dart';
-import '../models/campus_building.dart';
+import '../models/destination.dart';
+import '../models/place_category.dart';
 import '../services/campus_router.dart';
 import '../services/location_service.dart';
 import '../widgets/building_card.dart';
 import '../widgets/campus_search.dart';
 import '../widgets/colours.dart';
 import '../widgets/navigation_panel.dart';
+import '../widgets/quick_find.dart';
 import '../widgets/route_panel.dart';
 import 'about_screen.dart';
 
@@ -60,8 +62,8 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
 
   // Selection and directions
   _Mode _mode = _Mode.browse;
-  CampusBuilding? _selected;
-  CampusBuilding? _fromBuilding; // null = start from my location
+  Destination? _selected;
+  Destination? _fromPlace; // null = start from my location
   List<WalkRoute> _routes = [];
   int _routeIndex = 0;
   String? _routeError;
@@ -207,9 +209,28 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     }
   }
 
+  /// On the web a tap on a list or search page on top of the map also reaches
+  /// the map underneath. Map taps are ignored while one is open and briefly
+  /// after it closes, so picking an item doesn't also "tap" the map.
+  bool _overlayOpen = false;
+  DateTime _ignoreMapTapsUntil = DateTime.fromMillisecondsSinceEpoch(0);
+
+  Future<T> _withOverlay<T>(Future<T> Function() open) async {
+    _overlayOpen = true;
+    try {
+      return await open();
+    } finally {
+      _overlayOpen = false;
+      _ignoreMapTapsUntil = DateTime.now().add(
+        const Duration(milliseconds: 600),
+      );
+    }
+  }
+
   Future<void> _onMapClick(math.Point<double> point, LatLng latLng) async {
     final c = _map;
     if (c == null || !_layersReady || _mode == _Mode.navigating) return;
+    if (_overlayOpen || DateTime.now().isBefore(_ignoreMapTapsUntil)) return;
 
     if (_mode == _Mode.routes) {
       final hits = await c.queryRenderedFeatures(point, [
@@ -222,6 +243,21 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       return;
     }
 
+    const r = 18.0; // finger-sized area around the tap
+    final placeHits = await c.queryRenderedFeaturesInRect(
+      Rect.fromLTRB(point.x - r, point.y - r, point.x + r, point.y + r),
+      CampusLayers.placeLayers,
+      null,
+    );
+    if (placeHits.isNotEmpty) {
+      final id = ((placeHits.first as Map)['properties'] as Map)['id'];
+      final place = _campus.places.where((p) => p.id == id).firstOrNull;
+      if (place != null) {
+        await _select(_campus.destinationForPlace(place));
+        return;
+      }
+    }
+
     final hits = await c.queryRenderedFeatures(point, [
       CampusLayers.buildingsLayer,
     ], null);
@@ -231,26 +267,27 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     }
     final id = ((hits.first as Map)['properties'] as Map)['id'];
     final b = _campus.buildings[id];
-    if (b != null) await _selectBuilding(b);
+    if (b != null) await _select(Destination.building(b));
   }
 
   // ---------------------------------------------------------------------------
   // Building selection
   // ---------------------------------------------------------------------------
 
-  Future<void> _selectBuilding(CampusBuilding b) async {
+  Future<void> _select(Destination d) async {
     setState(() {
-      _followMe = false; // the user is looking at a building now
-      _selected = b;
+      _followMe = false; // the user is looking at a building or place now
+      _selected = d;
       _mode = _Mode.browse;
     });
     await _layers?.clearRoutes();
-    await _layers?.highlight(b.id);
+    await _layers?.highlight(d.buildingId);
+    await _layers?.showSelectedPoint(d.isPlace ? d.point : null);
     final zoom = math.max(_map?.cameraPosition?.zoom ?? 17, 17.3);
     await _map?.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
-          target: b.centre,
+          target: d.point,
           zoom: zoom,
           tilt: 0,
           bearing: _map?.cameraPosition?.bearing ?? 0,
@@ -273,11 +310,28 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   Future<void> _openSearch() async {
     await _campusLoaded;
     if (!mounted) return;
-    final b = await showSearch<CampusBuilding?>(
-      context: context,
-      delegate: CampusSearchDelegate(_campus),
+    final d = await _withOverlay(
+      () => showSearch<Destination?>(
+        context: context,
+        delegate: CampusSearchDelegate(_campus),
+      ),
     );
-    if (b != null) await _selectBuilding(b);
+    if (d != null) await _select(d);
+  }
+
+  /// Quick-find button: list of e.g. all toilets, nearest to you first.
+  Future<void> _openCategory(PlaceCategory c) async {
+    await _campusLoaded;
+    if (!mounted) return;
+    final d = await _withOverlay(
+      () => showPlaceList(
+        context,
+        campus: _campus,
+        category: c,
+        from: _hasLocation && _withinMapArea(_here!) ? _here : null,
+      ),
+    );
+    if (d != null) await _select(d);
   }
 
   // ---------------------------------------------------------------------------
@@ -285,14 +339,18 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   // ---------------------------------------------------------------------------
 
   LatLng? get _routeStart {
-    if (_fromBuilding != null) {
-      return _campus.walkGraph!.access[_fromBuilding!.id]?.first.door ??
-          _fromBuilding!.centre;
+    final from = _fromPlace;
+    if (from != null) {
+      final id = from.buildingId;
+      final door = id == null
+          ? null
+          : _campus.walkGraph!.access[id]?.first.door;
+      return door ?? from.point;
     }
     return _hasLocation ? _here : null;
   }
 
-  String get _fromLabel => _fromBuilding?.title ?? 'Your location';
+  String get _fromLabel => _fromPlace?.title ?? 'Your location';
 
   Future<void> _openDirections() async {
     setState(() {
@@ -318,7 +376,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       return;
     }
     try {
-      final routes = _router!.routes(from, target.id);
+      final routes = _routesTo(from, target);
       setState(() {
         _routes = routes;
         _routeIndex = 0;
@@ -333,6 +391,16 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       });
       await _layers?.clearRoutes();
     }
+  }
+
+  /// Buildings (and places inside them) are reached at the building's
+  /// entrances; outdoor places at the spot itself.
+  List<WalkRoute> _routesTo(LatLng from, Destination to, {int maxRoutes = 3}) {
+    final id = to.buildingId;
+    if (id != null && _campus.walkGraph!.access.containsKey(id)) {
+      return _router!.routes(from, id, maxRoutes: maxRoutes);
+    }
+    return _router!.routesToPoint(from, to.point, maxRoutes: maxRoutes);
   }
 
   Future<void> _drawRoutes() =>
@@ -366,52 +434,56 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   }
 
   Future<void> _changeStart() async {
-    final choice = await showModalBottomSheet<String>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.my_location),
-              title: const Text('Your location'),
-              subtitle: Text(
-                _hasLocation
-                    ? (_onCampus ? 'On campus' : 'Not on campus right now')
-                    : 'Location not available',
+    final choice = await _withOverlay(
+      () => showModalBottomSheet<String>(
+        context: context,
+        showDragHandle: true,
+        builder: (context) => SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.my_location),
+                title: const Text('Your location'),
+                subtitle: Text(
+                  _hasLocation
+                      ? (_onCampus ? 'On campus' : 'Not on campus right now')
+                      : 'Location not available',
+                ),
+                onTap: () => Navigator.pop(context, 'me'),
               ),
-              onTap: () => Navigator.pop(context, 'me'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.apartment),
-              title: const Text('Choose a building…'),
-              onTap: () => Navigator.pop(context, 'building'),
-            ),
-          ],
+              ListTile(
+                leading: const Icon(Icons.apartment),
+                title: const Text('Choose a building or place…'),
+                onTap: () => Navigator.pop(context, 'building'),
+              ),
+            ],
+          ),
         ),
       ),
     );
     if (choice == null || !mounted) return;
     if (choice == 'me') {
-      setState(() => _fromBuilding = null);
+      setState(() => _fromPlace = null);
     } else {
-      final b = await showSearch<CampusBuilding?>(
-        context: context,
-        delegate: CampusSearchDelegate(_campus),
+      final d = await _withOverlay(
+        () => showSearch<Destination?>(
+          context: context,
+          delegate: CampusSearchDelegate(_campus, label: 'Start from…'),
+        ),
       );
-      if (b == null) return;
-      setState(() => _fromBuilding = b);
+      if (d == null) return;
+      setState(() => _fromPlace = d);
     }
     setState(() => _routes = []);
     await _computeRoutes();
   }
 
   bool get _canStart =>
-      _routes.isNotEmpty && _fromBuilding == null && _hasLocation && _onCampus;
+      _routes.isNotEmpty && _fromPlace == null && _hasLocation && _onCampus;
 
   String? get _startHint {
-    if (_fromBuilding != null) {
+    if (_fromPlace != null) {
       return 'Live directions start from your location.';
     }
     if (!_hasLocation) return 'Live directions need your location.';
@@ -487,7 +559,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     if (target == null) return;
     setState(() => _rerouting = true);
     try {
-      final r = _router!.routes(here, target.id, maxRoutes: 1);
+      final r = _routesTo(here, target, maxRoutes: 1);
       if (!mounted || _mode != _Mode.navigating) return;
       setState(() {
         _routes = r;
@@ -507,9 +579,9 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     if (!kIsWeb) {
       await _map?.updateMyLocationTrackingMode(MyLocationTrackingMode.none);
     }
-    final b = _selected;
+    final d = _selected;
     await _clearSelection();
-    if (b != null) await _selectBuilding(b);
+    if (d != null) await _select(d);
   }
 
   static double _distance(LatLng a, LatLng b) => Geolocator.distanceBetween(
@@ -681,10 +753,13 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
             minMaxZoomPreference: const MinMaxZoomPreference(14.5, 20),
             // Flat map only: no tilting.
             tiltGesturesEnabled: false,
-            compassEnabled: true,
+            compassEnabled: !kIsWeb, // web: map stays north-up
             compassViewPosition: CompassViewPosition.topRight,
             compassViewMargins: const math.Point(16, 150),
-            attributionButtonPosition: AttributionButtonPosition.bottomLeft,
+            // Web: bottom-right, clear of the card's Directions button.
+            attributionButtonPosition: kIsWeb
+                ? AttributionButtonPosition.bottomRight
+                : AttributionButtonPosition.bottomLeft,
             onMapCreated: _onMapCreated,
             onStyleLoadedCallback: _onStyleLoaded,
             onMapClick: _onMapClick,
@@ -717,6 +792,12 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
                         ),
                       ),
                     ),
+                    if (_mode == _Mode.browse) ...[
+                      const SizedBox(height: 8),
+                      PointerInterceptor(
+                        child: QuickFindChips(onCategory: _openCategory),
+                      ),
+                    ],
                     if (_statusChip() case final chip?) ...[
                       const SizedBox(height: 8),
                       PointerInterceptor(child: chip),
@@ -767,9 +848,9 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     if (b == null) return null;
     switch (_mode) {
       case _Mode.browse:
-        return BuildingCard(
+        return DestinationCard(
           key: ValueKey('card-${b.id}'),
-          building: b,
+          destination: b,
           onDirections: _openDirections,
           onClose: _clearSelection,
         );
@@ -786,7 +867,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
           onSelect: _selectRoute,
           onChangeStart: _changeStart,
           onStart: _startNavigation,
-          onClose: () => _selectBuilding(b),
+          onClose: () => _select(b),
         );
       case _Mode.navigating:
         return NavigationPanel(
@@ -877,7 +958,7 @@ class _SearchBar extends StatelessWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Search CDU — e.g. Red 6, Library',
+                        'Search buildings, toilets, food…',
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodyLarge
                             ?.copyWith(color: Colors.black54),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/campus_building.dart';
+import '../models/destination.dart';
 import 'building_card.dart';
 import 'colours.dart';
 
@@ -15,7 +15,7 @@ class NavigationPanel extends StatelessWidget {
     required this.onEnd,
   });
 
-  final CampusBuilding destination;
+  final Destination destination;
   final double remainingMetres;
   final bool arrived;
   final bool rerouting;
@@ -29,8 +29,11 @@ class NavigationPanel extends StatelessWidget {
     return BottomPanel(
       child: Row(
         children: [
-          Icon(arrived ? Icons.flag : Icons.directions_walk,
-              color: arrived ? Colors.green.shade700 : routeBlue, size: 32),
+          Icon(
+            arrived ? Icons.flag : Icons.directions_walk,
+            color: arrived ? Colors.green.shade700 : routeBlue,
+            size: 32,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -38,19 +41,26 @@ class NavigationPanel extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (arrived) ...[
-                  Text('You have arrived',
-                      style: theme.textTheme.titleLarge
-                          ?.copyWith(fontWeight: FontWeight.bold)),
+                  Text(
+                    'You have arrived',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   Text('${destination.title} is right next to you.'),
                 ] else ...[
                   Text(
                     '${formatDuration(minutes)} · ${formatDistance(remainingMetres)}',
                     style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold, color: routeBlue),
+                      fontWeight: FontWeight.bold,
+                      color: routeBlue,
+                    ),
                   ),
-                  Text(rerouting
-                      ? 'Finding a new route…'
-                      : 'Walking to ${destination.title}'),
+                  Text(
+                    rerouting
+                        ? 'Finding a new route…'
+                        : 'Walking to ${destination.title}',
+                  ),
                 ],
               ],
             ),
@@ -58,7 +68,9 @@ class NavigationPanel extends StatelessWidget {
           FilledButton(
             onPressed: onEnd,
             style: FilledButton.styleFrom(
-              backgroundColor: arrived ? Colors.green.shade700 : Colors.red.shade700,
+              backgroundColor: arrived
+                  ? Colors.green.shade700
+                  : Colors.red.shade700,
             ),
             child: Text(arrived ? 'Done' : 'End'),
           ),

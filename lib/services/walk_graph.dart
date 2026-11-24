@@ -58,8 +58,13 @@ class WalkGraph {
     final metres = nodes.map(LocalProjection.toMetres).toList();
     final edges = <WalkEdge>[
       for (final e in json['edges'] as List)
-        WalkEdge(e[0] as int, e[1] as int, (e[2] as num).toDouble(),
-            (e[3] as num).toDouble(), e[4] as String),
+        WalkEdge(
+          e[0] as int,
+          e[1] as int,
+          (e[2] as num).toDouble(),
+          (e[3] as num).toDouble(),
+          e[4] as String,
+        ),
     ];
     final adjacency = List.generate(nodes.length, (_) => <int>[]);
     for (var i = 0; i < edges.length; i++) {
@@ -72,7 +77,10 @@ class WalkGraph {
         for (final a in list as List)
           AccessPoint(
             a['node'] as int,
-            LatLng((a['door'][1] as num).toDouble(), (a['door'][0] as num).toDouble()),
+            LatLng(
+              (a['door'][1] as num).toDouble(),
+              (a['door'][0] as num).toDouble(),
+            ),
             (a['gap'] as num).toDouble(),
           ),
       ];

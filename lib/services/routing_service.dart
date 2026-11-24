@@ -6,8 +6,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import '../models/route_result.dart';
 
 class RoutingService {
-  static const _routeUrl =
-      'https://valhalla1.openstreetmap.de/route';
+  static const _routeUrl = 'https://valhalla1.openstreetmap.de/route';
 
   Future<RouteResult> getWalkingRoute({
     required LatLng start,
@@ -15,9 +14,7 @@ class RoutingService {
   }) async {
     final response = await http.post(
       Uri.parse(_routeUrl),
-      headers: const {
-        'Content-Type': 'application/json',
-      },
+      headers: const {'Content-Type': 'application/json'},
       body: jsonEncode({
         'locations': [
           {'lat': start.latitude, 'lon': start.longitude},
@@ -31,9 +28,7 @@ class RoutingService {
     );
 
     if (response.statusCode != 200) {
-      throw Exception(
-        'Routing server returned ${response.statusCode}.',
-      );
+      throw Exception('Routing server returned ${response.statusCode}.');
     }
 
     final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -53,10 +48,7 @@ class RoutingService {
 
     final points = coordinates.map((item) {
       final pair = item as List<dynamic>;
-      return LatLng(
-        (pair[1] as num).toDouble(),
-        (pair[0] as num).toDouble(),
-      );
+      return LatLng((pair[1] as num).toDouble(), (pair[0] as num).toDouble());
     }).toList();
 
     return RouteResult(

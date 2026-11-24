@@ -69,6 +69,7 @@ flutter:
     - assets/campus/paths.geojson
     - assets/campus/areas.geojson
     - assets/campus/walk_graph.json
+    - assets/campus/places.geojson
     - assets/branding/app_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see

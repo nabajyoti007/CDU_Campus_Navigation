@@ -23,16 +23,29 @@ class AboutScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 8),
-                Image.asset('assets/branding/app_icon.png', width: 84, height: 84),
+                Image.asset(
+                  'assets/branding/app_icon.png',
+                  width: 84,
+                  height: 84,
+                ),
                 const SizedBox(height: 14),
-                Text(AppInfo.appName,
-                    style: theme.textTheme.headlineSmall
-                        ?.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  AppInfo.appName,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text('Version ${AppInfo.version}', style: theme.textTheme.bodyMedium),
+                Text(
+                  'Version ${AppInfo.version}',
+                  style: theme.textTheme.bodyMedium,
+                ),
                 const SizedBox(height: 8),
-                Text(AppInfo.tagline,
-                    textAlign: TextAlign.center, style: theme.textTheme.bodyLarge),
+                Text(
+                  AppInfo.tagline,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyLarge,
+                ),
               ],
             ),
           ),
@@ -45,8 +58,10 @@ class AboutScreen extends StatelessWidget {
               children: [
                 Text(AppInfo.description, style: theme.textTheme.bodyMedium),
                 const SizedBox(height: 6),
-                Text('Use it on any device (iPhone, Android, computer):',
-                    style: theme.textTheme.bodySmall),
+                Text(
+                  'Use it on any device (iPhone, Android, computer):',
+                  style: theme.textTheme.bodySmall,
+                ),
                 const _CopyRow(icon: Icons.public, text: AppInfo.webAppUrl),
                 const _CopyRow(icon: Icons.code, text: AppInfo.sourceUrl),
               ],
@@ -63,27 +78,38 @@ class AboutScreen extends StatelessWidget {
                     CircleAvatar(
                       radius: 24,
                       backgroundColor: cduNavy,
-                      child: Text(_initials(AppInfo.developerName),
-                          style: const TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold)),
+                      child: Text(
+                        _initials(AppInfo.developerName),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(AppInfo.developerName,
-                              style: theme.textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.bold)),
                           Text(
-                            [AppInfo.developerRole, AppInfo.course, AppInfo.university]
-                                .where((s) => s.isNotEmpty)
-                                .join(' · '),
+                            AppInfo.developerName,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            [
+                              AppInfo.developerRole,
+                              AppInfo.course,
+                              AppInfo.university,
+                            ].where((s) => s.isNotEmpty).join(' · '),
                             style: theme.textTheme.bodyMedium,
                           ),
                           if (AppInfo.studentId.isNotEmpty)
-                            Text('Student ID: ${AppInfo.studentId}',
-                                style: theme.textTheme.bodySmall),
+                            Text(
+                              'Student ID: ${AppInfo.studentId}',
+                              style: theme.textTheme.bodySmall,
+                            ),
                         ],
                       ),
                     ),
@@ -103,22 +129,21 @@ class AboutScreen extends StatelessWidget {
               children: const [
                 _Credit(
                   title: 'CDU Casuarina Campus Map (August 2024)',
-                  detail: 'Building names, precinct colours and place names. '
+                  detail:
+                      'Building names, precinct colours and place names. '
                       '© Charles Darwin University.',
                 ),
                 _Credit(
                   title: 'OpenStreetMap',
-                  detail: 'Building shapes and walking paths. '
+                  detail:
+                      'Building shapes and walking paths. '
                       '© OpenStreetMap contributors, Open Database Licence (ODbL).',
                 ),
                 _Credit(
                   title: 'OpenFreeMap',
                   detail: 'Street map tiles, based on OpenStreetMap data.',
                 ),
-                _Credit(
-                  title: 'MapLibre',
-                  detail: 'Open-source map display.',
-                ),
+                _Credit(title: 'MapLibre', detail: 'Open-source map display.'),
               ],
             ),
           ),
@@ -182,12 +207,14 @@ class _Section extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title.toUpperCase(),
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: cduNavy,
-                      letterSpacing: 0.8,
-                      fontWeight: FontWeight.bold,
-                    )),
+            Text(
+              title.toUpperCase(),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: cduNavy,
+                letterSpacing: 0.8,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 10),
             child,
           ],
@@ -220,9 +247,12 @@ class _Credit extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w600)),
+                Text(
+                  title,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 Text(detail, style: theme.textTheme.bodySmall),
               ],
             ),

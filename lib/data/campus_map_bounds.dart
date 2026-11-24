@@ -23,14 +23,14 @@ class CampusMapBounds {
   );
 
   static LatLngBounds get bounds => LatLngBounds(
-        southwest: LatLng(bottomLeft.latitude, bottomLeft.longitude),
-        northeast: LatLng(topRight.latitude, topRight.longitude),
-      );
+    southwest: LatLng(bottomLeft.latitude, bottomLeft.longitude),
+    northeast: LatLng(topRight.latitude, topRight.longitude),
+  );
 
   static LatLng get centre => LatLng(
-        (topLeft.latitude + bottomLeft.latitude) / 2,
-        (topLeft.longitude + topRight.longitude) / 2,
-      );
+    (topLeft.latitude + bottomLeft.latitude) / 2,
+    (topLeft.longitude + topRight.longitude) / 2,
+  );
 
   static bool contains(LatLng p) =>
       p.latitude <= topLeft.latitude &&

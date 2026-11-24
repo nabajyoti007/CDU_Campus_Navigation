@@ -1,0 +1,11 @@
+{
+  "_help": [
+    "Places that are not on the CDU PDF map or in OpenStreetMap, such as the bookshop or named cafes.",
+    "Add one entry per place, then run: python campus_data/scripts/build_places.py",
+    "category: one of toilets, food, library, venue, gallery, services, info, atm, post, security, parents, bus, taxi, parking, outdoor, bookshop",
+    "building: the building label as on the map (e.g. 'Red 1'); the place is shown at that building.",
+    "Instead of building you can give an exact position as lonlat: [130.8690, -12.3720].",
+    "Example: {\"name\": \"Campus Bookshop\", \"category\": \"bookshop\", \"building\": \"Red 1\", \"aliases\": [\"books\", \"textbooks\"]}"
+  ],
+  "places": []
+}

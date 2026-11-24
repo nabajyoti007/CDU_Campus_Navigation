@@ -8,7 +8,8 @@ class AppInfo {
 
   // --- App ------------------------------------------------------------------
   static const String appName = 'CDU Campus Navigator';
-  static const String tagline = 'Find any building on Casuarina campus and walk there.';
+  static const String tagline =
+      'Find any building on Casuarina campus and walk there.';
 
   /// Keep in step with `version:` in pubspec.yaml.
   static const String version = '1.0.1';
@@ -19,12 +20,15 @@ class AppInfo {
   static const String developerRole = 'Student Developer';
   static const String course = ''; // e.g. 'Bachelor of Information Technology'
   static const String university = 'Charles Darwin University';
-  static const String email = 's399970@students.cdu.edu.au'; // shown on the About screen
+  static const String email =
+      's399970@students.cdu.edu.au'; // shown on the About screen
   static const String website = ''; // e.g. GitHub or LinkedIn URL
 
   // --- Where to get the app -------------------------------------------------
-  static const String webAppUrl = 'https://nabajyoti007.github.io/CDU_Campus_Navigation/';
-  static const String sourceUrl = 'https://github.com/nabajyoti007/CDU_Campus_Navigation';
+  static const String webAppUrl =
+      'https://nabajyoti007.github.io/CDU_Campus_Navigation/';
+  static const String sourceUrl =
+      'https://github.com/nabajyoti007/CDU_Campus_Navigation';
 
   // --- Copyright ------------------------------------------------------------
   static const int copyrightYear = 2026;

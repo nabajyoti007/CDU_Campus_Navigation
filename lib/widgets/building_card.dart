@@ -1,32 +1,26 @@
 import 'package:flutter/material.dart';
 
-import '../models/campus_building.dart';
+import '../models/destination.dart';
+import '../models/place_category.dart';
 import 'colours.dart';
 
-/// Shown when a building is tapped: name, precinct and a Directions button.
-class BuildingCard extends StatelessWidget {
-  const BuildingCard({
+/// Shown when a building or place is tapped: name, details and Directions.
+class DestinationCard extends StatelessWidget {
+  const DestinationCard({
     super.key,
-    required this.building,
+    required this.destination,
     required this.onDirections,
     required this.onClose,
   });
 
-  final CampusBuilding building;
+  final Destination destination;
   final VoidCallback onDirections;
   final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final details = [
-      ...building.aliases,
-      if (building.precinct.isNotEmpty) '${building.precinct} precinct',
-      if (building.underConstruction) 'Under construction (Aug 2024 map)',
-      if (!building.hasLabel) 'No number on the CDU map',
-    ];
-
-    return _Sheet(
+    return BottomPanel(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,33 +28,23 @@ class BuildingCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 44,
-                height: 44,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: hexColour(building.colourHex),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  building.hasLabel ? building.label.split(' ').last : '?',
-                  style: TextStyle(
-                    color: onColour(building.colourHex),
-                    fontWeight: FontWeight.w800,
-                    fontSize: 18,
-                  ),
-                ),
-              ),
+              DestinationBadge(destination: destination, size: 44),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(building.title,
-                        style: theme.textTheme.titleLarge
-                            ?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(
+                      destination.title,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 2),
-                    Text(details.join(' · '), style: theme.textTheme.bodyMedium),
+                    Text(
+                      destination.subtitle,
+                      style: theme.textTheme.bodyMedium,
+                    ),
                   ],
                 ),
               ),
@@ -72,18 +56,14 @@ class BuildingCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          Row(
-            children: [
-              FilledButton.icon(
-                onPressed: onDirections,
-                style: FilledButton.styleFrom(
-                  backgroundColor: routeBlue,
-                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
-                ),
-                icon: const Icon(Icons.directions_walk),
-                label: const Text('Directions'),
-              ),
-            ],
+          FilledButton.icon(
+            onPressed: onDirections,
+            style: FilledButton.styleFrom(
+              backgroundColor: routeBlue,
+              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+            ),
+            icon: const Icon(Icons.directions_walk),
+            label: const Text('Directions'),
           ),
         ],
       ),
@@ -91,15 +71,55 @@ class BuildingCard extends StatelessWidget {
   }
 }
 
-/// Rounded white bottom sheet used by all panels.
-class _Sheet extends StatelessWidget {
-  const _Sheet({required this.child});
-  final Widget child;
+/// Square with the building number in its precinct colour, or the place's icon.
+class DestinationBadge extends StatelessWidget {
+  const DestinationBadge({
+    super.key,
+    required this.destination,
+    this.size = 40,
+  });
+
+  final Destination destination;
+  final double size;
 
   @override
-  Widget build(BuildContext context) => BottomPanel(child: child);
+  Widget build(BuildContext context) {
+    final place = destination.place;
+    if (place != null) {
+      final c = PlaceCategory.of(place.category);
+      return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: c.colour,
+          shape: c.round ? BoxShape.circle : BoxShape.rectangle,
+          borderRadius: c.round ? null : BorderRadius.circular(size * 0.25),
+        ),
+        child: Icon(c.icon, color: Colors.white, size: size * 0.58),
+      );
+    }
+    final b = destination.building!;
+    return Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: hexColour(b.colourHex),
+        borderRadius: BorderRadius.circular(size * 0.27),
+      ),
+      child: Text(
+        b.hasLabel ? b.label.split(' ').last : '?',
+        style: TextStyle(
+          color: onColour(b.colourHex),
+          fontWeight: FontWeight.w800,
+          fontSize: size * 0.4,
+        ),
+      ),
+    );
+  }
 }
 
+/// Rounded white bottom sheet used by all panels.
 class BottomPanel extends StatelessWidget {
   const BottomPanel({super.key, required this.child});
   final Widget child;

@@ -43,9 +43,7 @@ class CDUCampusApp extends StatelessWidget {
       title: AppInfo.appName,
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF251B5B),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF251B5B)),
       ),
       home: const CampusMapScreen(),
     );

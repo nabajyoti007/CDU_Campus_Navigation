@@ -1,0 +1,1329 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.4 2390de5a",
+  "osm3s": {
+    "timestamp_osm_base": "2026-11-24T11:41:32Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 493318970,
+  "lat": -12.3720269,
+  "lon": 130.8690385,
+  "tags": {
+    "amenity": "post_box"
+  }
+},
+{
+  "type": "node",
+  "id": 493319182,
+  "lat": -12.3731168,
+  "lon": 130.8706865,
+  "tags": {
+    "amenity": "post_box"
+  }
+},
+{
+  "type": "node",
+  "id": 1936183559,
+  "lat": -12.3728352,
+  "lon": 130.8706049,
+  "tags": {
+    "amenity": "bus_station",
+    "bus": "yes",
+    "public_transport": "station"
+  }
+},
+{
+  "type": "node",
+  "id": 5134976121,
+  "lat": -12.3716195,
+  "lon": 130.8675993,
+  "tags": {
+    "amenity": "school",
+    "name": "Charles Darwin Uni"
+  }
+},
+{
+  "type": "node",
+  "id": 5546749967,
+  "lat": -12.3741575,
+  "lon": 130.8682208,
+  "tags": {
+    "access": "yes",
+    "amenity": "parking",
+    "fee": "no",
+    "name": "Disablility Parking",
+    "park_ride": "no",
+    "parking": "surface"
+  }
+},
+{
+  "type": "node",
+  "id": 10125281319,
+  "lat": -12.3746811,
+  "lon": 130.8699148,
+  "tags": {
+    "amenity": "charging_station",
+    "bicycle": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 10559098650,
+  "lat": -12.3717205,
+  "lon": 130.8656980,
+  "tags": {
+    "amenity": "toilets"
+  }
+},
+{
+  "type": "node",
+  "id": 10559098865,
+  "lat": -12.3742370,
+  "lon": 130.8701907,
+  "tags": {
+    "amenity": "studio",
+    "name": "Territory FM 104.1",
+    "operator": "Charles Darwin University",
+    "studio": "radio",
+    "website": "https://territoryfm.com/",
+    "wikidata": "Q4546499",
+    "wikipedia": "en:104.1 Territory FM"
+  }
+},
+{
+  "type": "node",
+  "id": 11597831250,
+  "lat": -12.3764161,
+  "lon": 130.8724262,
+  "tags": {
+    "bench": "no",
+    "bus": "yes",
+    "covered": "no",
+    "highway": "bus_stop",
+    "name": "Lakeside Drive (100)",
+    "operator": "Darwin Bus",
+    "public_transport": "platform",
+    "ref": "100",
+    "route_ref": "4;OL1"
+  }
+},
+{
+  "type": "node",
+  "id": 11597838695,
+  "lat": -12.3724679,
+  "lon": 130.8724735,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Ellengowan Drive (019)",
+    "operator": "Darwin Bus",
+    "public_transport": "platform",
+    "ref": "019",
+    "route_ref": "1"
+  }
+},
+{
+  "type": "node",
+  "id": 11597838754,
+  "lat": -12.3736849,
+  "lon": 130.8738082,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Dripstone Road (020)",
+    "operator": "Darwin Bus",
+    "public_transport": "platform",
+    "ref": "020",
+    "route_ref": "1;4"
+  }
+},
+{
+  "type": "node",
+  "id": 11597838766,
+  "lat": -12.3694240,
+  "lon": 130.8756803,
+  "tags": {
+    "bench": "yes",
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Nakara Shops (017)",
+    "operator": "Darwin Bus",
+    "public_transport": "platform",
+    "ref": "017",
+    "route_ref": "1",
+    "shelter": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11597838857,
+  "lat": -12.3727616,
+  "lon": 130.8706102,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Charles Darwin University (101)",
+    "operator": "Darwin Bus",
+    "public_transport": "platform",
+    "ref": "101",
+    "route_ref": "4"
+  }
+},
+{
+  "type": "node",
+  "id": 11597838909,
+  "lat": -12.3755195,
+  "lon": 130.8737126,
+  "tags": {
+    "bench": "no",
+    "bus": "yes",
+    "covered": "no",
+    "highway": "bus_stop",
+    "name": "Lakeside Drive (214)",
+    "operator": "Darwin Bus",
+    "public_transport": "platform",
+    "ref": "214",
+    "route_ref": "4"
+  }
+},
+{
+  "type": "node",
+  "id": 11597839081,
+  "lat": -12.3751904,
+  "lon": 130.8757241,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Dripstone Road (021)",
+    "operator": "Darwin Bus",
+    "public_transport": "platform",
+    "ref": "021",
+    "route_ref": "1;4;OL1"
+  }
+},
+{
+  "type": "node",
+  "id": 11597839092,
+  "lat": -12.3716286,
+  "lon": 130.8746372,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Buchanan Terrace (018)",
+    "operator": "Darwin Bus",
+    "public_transport": "platform",
+    "ref": "018",
+    "route_ref": "1"
+  }
+},
+{
+  "type": "node",
+  "id": 11597839306,
+  "lat": -12.3754680,
+  "lon": 130.8759566,
+  "tags": {
+    "bus": "yes",
+    "highway": "bus_stop",
+    "name": "Dripstone Road (213)",
+    "operator": "Darwin Bus",
+    "public_transport": "platform",
+    "ref": "213",
+    "route_ref": "4"
+  }
+},
+{
+  "type": "node",
+  "id": 11983032969,
+  "lat": -12.3688307,
+  "lon": 130.8758704,
+  "tags": {
+    "access": "yes",
+    "amenity": "bicycle_parking",
+    "bicycle_parking": "wall_loops",
+    "capacity": "5",
+    "covered": "no",
+    "indoor": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 12118040001,
+  "lat": -12.3731175,
+  "lon": 130.8678741,
+  "tags": {
+    "amenity": "drinking_water"
+  }
+},
+{
+  "type": "node",
+  "id": 12123304501,
+  "lat": -12.3724201,
+  "lon": 130.8688855,
+  "tags": {
+    "amenity": "drinking_water",
+    "fountain": "bubbler"
+  }
+},
+{
+  "type": "node",
+  "id": 13807708902,
+  "lat": -12.3714882,
+  "lon": 130.8678187,
+  "tags": {
+    "amenity": "drinking_water"
+  }
+},
+{
+  "type": "way",
+  "id": 154615415,
+  "center": {
+    "lat": -12.3712468,
+    "lon": 130.8680228
+  },
+  "tags": {
+    "amenity": "university",
+    "education": "university",
+    "name": "Charles Darwin University",
+    "name:vi": "Đại học Charles Darwin",
+    "name:zh": "查尔斯达尔文大学",
+    "old_name": "Northern Territory University",
+    "short_name": "CDU",
+    "website": "https://www.cdu.edu.au/",
+    "wikidata": "Q1064071",
+    "wikipedia": "en:Charles Darwin University"
+  }
+},
+{
+  "type": "way",
+  "id": 165273463,
+  "center": {
+    "lat": -12.3765175,
+    "lon": 130.8705822
+  },
+  "tags": {
+    "leisure": "pitch",
+    "name": "Alawa Oval",
+    "sport": "cricket"
+  }
+},
+{
+  "type": "way",
+  "id": 233930544,
+  "center": {
+    "lat": -12.3706829,
+    "lon": 130.8718999
+  },
+  "tags": {
+    "amenity": "parking",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 315419518,
+  "center": {
+    "lat": -12.3733518,
+    "lon": 130.8712610
+  },
+  "tags": {
+    "amenity": "parking",
+    "fee": "no",
+    "parking": "surface"
+  }
+},
+{
+  "type": "way",
+  "id": 315419565,
+  "center": {
+    "lat": -12.3750124,
+    "lon": 130.8709143
+  },
+  "tags": {
+    "amenity": "parking",
+    "fee": "yes",
+    "name": "Green B Carpark"
+  }
+},
+{
+  "type": "way",
+  "id": 315419989,
+  "center": {
+    "lat": -12.3770740,
+    "lon": 130.8735858
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 389591857,
+  "center": {
+    "lat": -12.3699265,
+    "lon": 130.8762734
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 389597330,
+  "center": {
+    "lat": -12.3686126,
+    "lon": 130.8746309
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 544528778,
+  "center": {
+    "lat": -12.3690106,
+    "lon": 130.8637668
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Casuarina Beach"
+  }
+},
+{
+  "type": "way",
+  "id": 544753282,
+  "center": {
+    "lat": -12.3710991,
+    "lon": 130.8722323
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 544753283,
+  "center": {
+    "lat": -12.3738595,
+    "lon": 130.8670966
+  },
+  "tags": {
+    "amenity": "parking",
+    "name": "Purple A Carpark"
+  }
+},
+{
+  "type": "way",
+  "id": 544753306,
+  "center": {
+    "lat": -12.3707786,
+    "lon": 130.8705207
+  },
+  "tags": {
+    "amenity": "parking",
+    "name": "Blue F Carpark"
+  }
+},
+{
+  "type": "way",
+  "id": 545009988,
+  "center": {
+    "lat": -12.3737754,
+    "lon": 130.8680667
+  },
+  "tags": {
+    "access": "yes",
+    "amenity": "parking",
+    "fee": "no",
+    "name": "Purple A Carpark",
+    "parking": "surface"
+  }
+},
+{
+  "type": "way",
+  "id": 545009989,
+  "center": {
+    "lat": -12.3731746,
+    "lon": 130.8691541
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545009990,
+  "center": {
+    "lat": -12.3737217,
+    "lon": 130.8694718
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 545009998,
+  "center": {
+    "lat": -12.3749899,
+    "lon": 130.8717350
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 545010006,
+  "center": {
+    "lat": -12.3754711,
+    "lon": 130.8731328
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010008,
+  "center": {
+    "lat": -12.3752381,
+    "lon": 130.8725104
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010009,
+  "center": {
+    "lat": -12.3749319,
+    "lon": 130.8725529
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010059,
+  "center": {
+    "lat": -12.3715675,
+    "lon": 130.8729308
+  },
+  "tags": {
+    "amenity": "fountain"
+  }
+},
+{
+  "type": "way",
+  "id": 545010060,
+  "center": {
+    "lat": -12.3718183,
+    "lon": 130.8729563
+  },
+  "tags": {
+    "amenity": "fountain"
+  }
+},
+{
+  "type": "way",
+  "id": 545010062,
+  "center": {
+    "lat": -12.3721015,
+    "lon": 130.8728754
+  },
+  "tags": {
+    "amenity": "fountain"
+  }
+},
+{
+  "type": "way",
+  "id": 545010063,
+  "center": {
+    "lat": -12.3724858,
+    "lon": 130.8728812
+  },
+  "tags": {
+    "amenity": "fountain"
+  }
+},
+{
+  "type": "way",
+  "id": 545010070,
+  "center": {
+    "lat": -12.3733786,
+    "lon": 130.8737433
+  },
+  "tags": {
+    "amenity": "fountain"
+  }
+},
+{
+  "type": "way",
+  "id": 545010075,
+  "center": {
+    "lat": -12.3709246,
+    "lon": 130.8697605
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010077,
+  "center": {
+    "lat": -12.3704029,
+    "lon": 130.8689843
+  },
+  "tags": {
+    "amenity": "parking",
+    "name": "Yellow A Carpark"
+  }
+},
+{
+  "type": "way",
+  "id": 545010078,
+  "center": {
+    "lat": -12.3698883,
+    "lon": 130.8681706
+  },
+  "tags": {
+    "amenity": "parking",
+    "name": "Yellow B Carpark"
+  }
+},
+{
+  "type": "way",
+  "id": 545010080,
+  "center": {
+    "lat": -12.3691661,
+    "lon": 130.8675832
+  },
+  "tags": {
+    "access": "yes",
+    "amenity": "parking",
+    "fee": "no",
+    "name": "Yellow C Carpark (Free)",
+    "parking": "surface"
+  }
+},
+{
+  "type": "way",
+  "id": 545010081,
+  "center": {
+    "lat": -12.3691452,
+    "lon": 130.8682500
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010083,
+  "center": {
+    "lat": -12.3694615,
+    "lon": 130.8682152
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010084,
+  "center": {
+    "lat": -12.3695898,
+    "lon": 130.8684550
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010090,
+  "center": {
+    "lat": -12.3707356,
+    "lon": 130.8687752
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Chinese Garden"
+  }
+},
+{
+  "type": "way",
+  "id": 545010097,
+  "center": {
+    "lat": -12.3701858,
+    "lon": 130.8657931
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 545010101,
+  "center": {
+    "lat": -12.3715639,
+    "lon": 130.8669619
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010103,
+  "center": {
+    "lat": -12.3714826,
+    "lon": 130.8667704
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010104,
+  "center": {
+    "lat": -12.3717464,
+    "lon": 130.8675988
+  },
+  "tags": {
+    "amenity": "parking",
+    "name": "Purple B Carpark"
+  }
+},
+{
+  "type": "way",
+  "id": 545010114,
+  "center": {
+    "lat": -12.3719855,
+    "lon": 130.8693309
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 545010126,
+  "center": {
+    "lat": -12.3723809,
+    "lon": 130.8713947
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010127,
+  "center": {
+    "lat": -12.3726745,
+    "lon": 130.8711248
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010132,
+  "center": {
+    "lat": -12.3742433,
+    "lon": 130.8675540
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 545010133,
+  "center": {
+    "lat": -12.3742985,
+    "lon": 130.8680695
+  },
+  "tags": {
+    "access": "yes",
+    "amenity": "parking",
+    "fee": "no",
+    "parking": "surface"
+  }
+},
+{
+  "type": "way",
+  "id": 545010152,
+  "center": {
+    "lat": -12.3710965,
+    "lon": 130.8660388
+  },
+  "tags": {
+    "amenity": "parking",
+    "name": "Pink Carpark A"
+  }
+},
+{
+  "type": "way",
+  "id": 545388949,
+  "center": {
+    "lat": -12.3690801,
+    "lon": 130.8686804
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 545388951,
+  "center": {
+    "lat": -12.3696848,
+    "lon": 130.8695427
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 545388953,
+  "center": {
+    "lat": -12.3711738,
+    "lon": 130.8678625
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 545388968,
+  "center": {
+    "lat": -12.3744929,
+    "lon": 130.8731966
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Pirates Oval"
+  }
+},
+{
+  "type": "way",
+  "id": 545482241,
+  "center": {
+    "lat": -12.3696504,
+    "lon": 130.8721661
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 549689901,
+  "center": {
+    "lat": -12.3699624,
+    "lon": 130.8702894
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 549689902,
+  "center": {
+    "lat": -12.3696712,
+    "lon": 130.8699720
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 549689904,
+  "center": {
+    "lat": -12.3731755,
+    "lon": 130.8628277
+  },
+  "tags": {
+    "amenity": "shelter",
+    "shelter_type": "picnic_shelter"
+  }
+},
+{
+  "type": "way",
+  "id": 549689906,
+  "center": {
+    "lat": -12.3727809,
+    "lon": 130.8712716
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 549689907,
+  "center": {
+    "lat": -12.3728995,
+    "lon": 130.8711624
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 549689910,
+  "center": {
+    "lat": -12.3708265,
+    "lon": 130.8689367
+  },
+  "tags": {
+    "amenity": "shelter",
+    "name": "Pagona"
+  }
+},
+{
+  "type": "way",
+  "id": 560417147,
+  "center": {
+    "lat": -12.3758222,
+    "lon": 130.8714821
+  },
+  "tags": {
+    "leisure": "pitch",
+    "sport": "cricket"
+  }
+},
+{
+  "type": "way",
+  "id": 573763904,
+  "center": {
+    "lat": -12.3737477,
+    "lon": 130.8619868
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Rapid Creek picnic area",
+    "name:aus": "Gurambai"
+  }
+},
+{
+  "type": "way",
+  "id": 591569372,
+  "center": {
+    "lat": -12.3744109,
+    "lon": 130.8757964
+  },
+  "tags": {
+    "addr:housenumber": "72",
+    "addr:postcode": "0810",
+    "addr:street": "Dripstone Road",
+    "amenity": "college",
+    "email": "info@nungalinya.edu.au",
+    "name": "Nungalinya College",
+    "phone": "+61 8 8920 7500",
+    "website": "https://www.nungalinya.edu.au/",
+    "wikidata": "Q7069828"
+  }
+},
+{
+  "type": "way",
+  "id": 591569379,
+  "center": {
+    "lat": -12.3744216,
+    "lon": 130.8761917
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 591569402,
+  "center": {
+    "lat": -12.3746511,
+    "lon": 130.8752361
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 594394659,
+  "center": {
+    "lat": -12.3710751,
+    "lon": 130.8762028
+  },
+  "tags": {
+    "leisure": "playground"
+  }
+},
+{
+  "type": "way",
+  "id": 594394699,
+  "center": {
+    "lat": -12.3689387,
+    "lon": 130.8761160
+  },
+  "tags": {
+    "building": "yes",
+    "name": "Nakara Shopping Center",
+    "shop": "mall"
+  }
+},
+{
+  "type": "way",
+  "id": 754797229,
+  "center": {
+    "lat": -12.3733749,
+    "lon": 130.8739691
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 754797230,
+  "center": {
+    "lat": -12.3726526,
+    "lon": 130.8742807
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 756409246,
+  "center": {
+    "lat": -12.3719685,
+    "lon": 130.8745431
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 756409247,
+  "center": {
+    "lat": -12.3712747,
+    "lon": 130.8748890
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 870614815,
+  "center": {
+    "lat": -12.3674487,
+    "lon": 130.8645758
+  },
+  "tags": {
+    "access": "yes",
+    "amenity": "parking",
+    "capacity:disabled": "1",
+    "fee": "no",
+    "smoothness": "excellent",
+    "surface": "asphalt"
+  }
+},
+{
+  "type": "way",
+  "id": 1074155765,
+  "center": {
+    "lat": -12.3724512,
+    "lon": 130.8659619
+  },
+  "tags": {
+    "access": "yes",
+    "amenity": "parking",
+    "fee": "no",
+    "parking": "surface",
+    "surface": "asphalt"
+  }
+},
+{
+  "type": "way",
+  "id": 1076722585,
+  "center": {
+    "lat": -12.3762018,
+    "lon": 130.8724403
+  },
+  "tags": {
+    "addr:housenumber": "77",
+    "addr:state": "NT",
+    "addr:street": "Lakeside Drive",
+    "addr:suburb": "Brinkin",
+    "amenity": "childcare",
+    "building": "yes",
+    "name": "Goodstart Early Learning CDU",
+    "operator": "Goodstart Early Learning",
+    "operator:type": "business",
+    "website": "https://www.goodstart.org.au/centres/cdu"
+  }
+},
+{
+  "type": "way",
+  "id": 1132411830,
+  "center": {
+    "lat": -12.3720952,
+    "lon": 130.8652709
+  },
+  "tags": {
+    "amenity": "parking",
+    "fee": "no",
+    "parking": "surface"
+  }
+},
+{
+  "type": "way",
+  "id": 1132411850,
+  "center": {
+    "lat": -12.3746395,
+    "lon": 130.8695651
+  },
+  "tags": {
+    "access": "permit",
+    "amenity": "parking",
+    "fee": "yes",
+    "parking": "surface"
+  }
+},
+{
+  "type": "way",
+  "id": 1139074370,
+  "center": {
+    "lat": -12.3692871,
+    "lon": 130.8765852
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 1219103672,
+  "center": {
+    "lat": -12.3699559,
+    "lon": 130.8716859
+  },
+  "tags": {
+    "amenity": "university",
+    "education": "university",
+    "name": "North Australian Research Unit",
+    "operator": "Australian National University",
+    "wikidata": "Q127990"
+  }
+},
+{
+  "type": "way",
+  "id": 1219103680,
+  "center": {
+    "lat": -12.3696501,
+    "lon": 130.8721937
+  },
+  "tags": {
+    "leisure": "swimming_pool",
+    "weather_protection": "canopy"
+  }
+},
+{
+  "type": "way",
+  "id": 1219103685,
+  "center": {
+    "lat": -12.3699309,
+    "lon": 130.8723651
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 1219103687,
+  "center": {
+    "lat": -12.3700657,
+    "lon": 130.8717783
+  },
+  "tags": {
+    "amenity": "parking",
+    "capacity": "26"
+  }
+},
+{
+  "type": "way",
+  "id": 1219103690,
+  "center": {
+    "lat": -12.3704363,
+    "lon": 130.8723121
+  },
+  "tags": {
+    "amenity": "parking",
+    "capacity": "2"
+  }
+},
+{
+  "type": "way",
+  "id": 1248704156,
+  "center": {
+    "lat": -12.3687368,
+    "lon": 130.8761212
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 1248736251,
+  "center": {
+    "lat": -12.3726785,
+    "lon": 130.8684588
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 1248736252,
+  "center": {
+    "lat": -12.3717165,
+    "lon": 130.8669096
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 1248736253,
+  "center": {
+    "lat": -12.3721721,
+    "lon": 130.8719603
+  },
+  "tags": {
+    "amenity": "parking"
+  }
+},
+{
+  "type": "way",
+  "id": 1457372746,
+  "center": {
+    "lat": -12.3696507,
+    "lon": 130.8678807
+  },
+  "tags": {
+    "garden:type": "street_side",
+    "leisure": "garden",
+    "surface": "fine_gravel"
+  }
+},
+{
+  "type": "way",
+  "id": 1457373032,
+  "center": {
+    "lat": -12.3712019,
+    "lon": 130.8697681
+  },
+  "tags": {
+    "leisure": "garden"
+  }
+},
+{
+  "type": "way",
+  "id": 1457373033,
+  "center": {
+    "lat": -12.3712307,
+    "lon": 130.8695557
+  },
+  "tags": {
+    "leisure": "garden"
+  }
+},
+{
+  "type": "way",
+  "id": 1457373035,
+  "center": {
+    "lat": -12.3710860,
+    "lon": 130.8696940
+  },
+  "tags": {
+    "leisure": "garden"
+  }
+},
+{
+  "type": "way",
+  "id": 1457373036,
+  "center": {
+    "lat": -12.3707834,
+    "lon": 130.8697878
+  },
+  "tags": {
+    "leisure": "garden"
+  }
+},
+{
+  "type": "way",
+  "id": 1474064167,
+  "center": {
+    "lat": -12.3775486,
+    "lon": 130.8692178
+  },
+  "tags": {
+    "leisure": "pitch"
+  }
+},
+{
+  "type": "way",
+  "id": 1474064181,
+  "center": {
+    "lat": -12.3744764,
+    "lon": 130.8733764
+  },
+  "tags": {
+    "leisure": "pitch",
+    "sport": "rugby_union"
+  }
+},
+{
+  "type": "relation",
+  "id": 12996594,
+  "center": {
+    "lat": -12.3546156,
+    "lon": 130.8767777
+  },
+  "tags": {
+    "boundary": "protected_area",
+    "leisure": "nature_reserve",
+    "name": "Casuarina Coastal Reserve",
+    "protect_class": "5",
+    "ref:capad:pa_id": "NT_PA6",
+    "type": "boundary",
+    "wikidata": "Q19872006"
+  }
+}
+
+  ]
+}
