@@ -385,6 +385,8 @@ class CampusLayers {
           'interpolate',
           ['linear'],
           ['zoom'],
+          14.5,
+          8,
           15.5,
           10,
           17.5,
@@ -392,6 +394,8 @@ class CampusLayers {
           19,
           16,
         ],
+        // Building numbers are always shown, even where labels are crowded.
+        textAllowOverlap: true,
         textColor: [
           'match',
           ['get', 'precinct'],
@@ -413,7 +417,6 @@ class CampusLayers {
         ['get', 'kind'],
         'building',
       ],
-      minzoom: 15.6,
       enableInteraction: false,
     );
     // Precinct banners ("RED PRECINCT"), white on the precinct colour like the PDF.
@@ -590,6 +593,13 @@ class CampusLayers {
       ),
       enableInteraction: false,
     );
+  }
+
+  /// Show or hide all place icons (toilets, food, library ...).
+  Future<void> setPlacesVisible(bool visible) async {
+    for (final id in placeLayers) {
+      await controller.setLayerVisibility(id, visible);
+    }
   }
 
   Future<void> highlight(String? buildingId) =>

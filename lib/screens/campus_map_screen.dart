@@ -216,6 +216,16 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   /// On the web a tap on a list or search page on top of the map also reaches
   /// the map underneath. Map taps are ignored while one is open and briefly
   /// after it closes, so picking an item doesn't also "tap" the map.
+  /// Place icons (toilets, food, library ...) on or off; building numbers
+  /// are always shown.
+  bool _placesVisible = true;
+
+  Future<void> _togglePlaces() async {
+    setState(() => _placesVisible = !_placesVisible);
+    await _layers?.setPlacesVisible(_placesVisible);
+    _showMessage(_placesVisible ? 'Place icons shown' : 'Place icons hidden');
+  }
+
   bool _overlayOpen = false;
   DateTime _ignoreMapTapsUntil = DateTime.fromMillisecondsSinceEpoch(0);
 
@@ -825,6 +835,8 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
                     child: _MapButtons(
                       hasLocation: _hasLocation,
                       following: _followMe && _hasLocation,
+                      placesVisible: _placesVisible,
+                      onTogglePlaces: _togglePlaces,
                       onWholeCampus: _showWholeCampus,
                       onMyLocation: _goToMyLocation,
                     ),
@@ -1031,11 +1043,15 @@ class _MapButtons extends StatelessWidget {
   const _MapButtons({
     required this.hasLocation,
     required this.following,
+    required this.placesVisible,
+    required this.onTogglePlaces,
     required this.onWholeCampus,
     required this.onMyLocation,
   });
 
   final bool hasLocation;
+  final bool placesVisible;
+  final VoidCallback onTogglePlaces;
 
   /// The map is keeping the user in the middle (button shown solid blue).
   final bool following;
@@ -1047,6 +1063,17 @@ class _MapButtons extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        FloatingActionButton.small(
+          heroTag: 'toggle-places',
+          tooltip: placesVisible ? 'Hide place icons' : 'Show place icons',
+          backgroundColor: placesVisible ? Colors.white : cduNavy,
+          onPressed: onTogglePlaces,
+          child: Icon(
+            placesVisible ? Icons.layers : Icons.layers_clear,
+            color: placesVisible ? cduNavy : Colors.white,
+          ),
+        ),
+        const SizedBox(height: 10),
         FloatingActionButton.small(
           heroTag: 'whole-campus',
           tooltip: 'Show whole campus',
