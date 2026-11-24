@@ -193,7 +193,11 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
 
   void _onMapCreated(MapLibreMapController c) {
     _map = c;
-    _layers = CampusLayers(c);
+    // Phones draw map icons in physical pixels; the web in screen pixels.
+    _layers = CampusLayers(
+      c,
+      iconScale: kIsWeb ? 1 : MediaQuery.devicePixelRatioOf(context),
+    );
   }
 
   Future<void> _onStyleLoaded() async {
@@ -755,7 +759,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
             tiltGesturesEnabled: false,
             compassEnabled: !kIsWeb, // web: map stays north-up
             compassViewPosition: CompassViewPosition.topRight,
-            compassViewMargins: const math.Point(16, 150),
+            compassViewMargins: const math.Point(16, 230), // below the chips
             // Web: bottom-right, clear of the card's Directions button.
             attributionButtonPosition: kIsWeb
                 ? AttributionButtonPosition.bottomRight

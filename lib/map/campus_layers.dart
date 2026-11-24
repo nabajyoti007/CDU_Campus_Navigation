@@ -13,9 +13,19 @@ import 'place_icons.dart';
 /// On top, bottom to top: PDF precinct ground colours, footpaths, CDU buildings
 /// (flat, precinct colour, dark edge, soft shadow), routes, then labels.
 class CampusLayers {
-  CampusLayers(this.controller);
+  CampusLayers(this.controller, {this.iconScale = 1});
 
   final MapLibreMapController controller;
+
+  /// Map icon images are drawn in physical pixels on Android/iOS but in
+  /// screen (CSS) pixels on the web; pass the phone's pixel ratio on phones
+  /// so icons are the same size everywhere.
+  final double iconScale;
+
+  /// Zoom from which place names and facility icons appear. Further out the
+  /// map stays clean: building numbers and the main places' icons only.
+  static const double namesFromZoom = 17.3;
+  static const double facilitiesFromZoom = 16.8;
 
   static const baseStyle = 'https://tiles.openfreemap.org/styles/liberty';
 
@@ -367,7 +377,7 @@ class CampusLayers {
           'step',
           ['zoom'],
           ['get', 'number'],
-          18,
+          namesFromZoom,
           ['get', 'label'],
         ],
         textFont: ['Noto Sans Bold'],
@@ -449,11 +459,15 @@ class CampusLayers {
       for (final c in PlaceCategory.all)
         if (c.major) c.id,
     ];
+    final k = iconScale;
+    // Main places (library, theatre, gardens ...): icon from further out,
+    // the name only when zoomed in (tap for the name otherwise). The marker
+    // stands just above the spot so the building number stays readable.
     await controller.addSymbolLayer(
       _places,
       placeLayers[0],
-      const SymbolLayerProperties(
-        iconImage: [
+      SymbolLayerProperties(
+        iconImage: const [
           'concat',
           'poi-',
           ['get', 'category'],
@@ -463,31 +477,29 @@ class CampusLayers {
           ['linear'],
           ['zoom'],
           15,
-          0.3,
+          0.34 * k,
           17,
-          0.42,
+          0.46 * k,
           19,
-          0.5,
+          0.56 * k,
         ],
         iconAnchor: 'bottom',
         iconAllowOverlap: true,
-        textField: ['get', 'name'],
-        textFont: ['Noto Sans Bold'],
-        textSize: [
-          'interpolate',
-          ['linear'],
+        textField: const [
+          'step',
           ['zoom'],
-          15.5,
-          10,
-          18,
-          13,
+          '',
+          namesFromZoom,
+          ['get', 'name'],
         ],
+        textFont: const ['Noto Sans Bold'],
+        textSize: 13,
         textAnchor: 'left',
-        textOffset: [1.3, -1.4],
+        textOffset: const [1.4, -1.5],
         textMaxWidth: 9,
         textColor: '#211858',
         textHaloColor: '#FFFFFF',
-        textHaloWidth: 1.6,
+        textHaloWidth: 1.8,
         textOptional: true,
       ),
       filter: [
@@ -498,13 +510,13 @@ class CampusLayers {
       minzoom: 15.2,
       enableInteraction: false,
     );
-    // Facilities like on the PDF (blue squares): when zoomed in; they never
-    // hide building numbers.
+    // Facilities in the PDF's style (toilets, food, ATM, parking ...): only when
+    // zoomed in; they never hide building numbers.
     await controller.addSymbolLayer(
       _places,
       placeLayers[1],
-      const SymbolLayerProperties(
-        iconImage: [
+      SymbolLayerProperties(
+        iconImage: const [
           'concat',
           'poi-',
           ['get', 'category'],
@@ -513,12 +525,12 @@ class CampusLayers {
           'interpolate',
           ['linear'],
           ['zoom'],
-          16.2,
-          0.24,
+          facilitiesFromZoom,
+          0.3 * k,
           18,
-          0.36,
+          0.4 * k,
           19,
-          0.42,
+          0.48 * k,
         ],
         iconAllowOverlap: true,
         iconIgnorePlacement: true,
@@ -531,7 +543,7 @@ class CampusLayers {
           ['literal', majorIds],
         ],
       ],
-      minzoom: 16.2,
+      minzoom: facilitiesFromZoom,
       enableInteraction: false,
     );
 
