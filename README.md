@@ -11,7 +11,8 @@ follows you as you walk, counts down the distance and re-routes if you go the wr
 
 ## Use it on any device (web app)
 
-Open **https://nabajyoti007.github.io/CDU_Campus_Navigation/** in your phone's browser.
+Open **https://cdu-campus-navigator.netlify.app** in your phone's browser
+(also available at https://nabajyoti007.github.io/CDU_Campus_Navigation/).
 Works on iPhone, Android and computers. To use it like an app: in Safari tap
 **Share → Add to Home Screen**; in Chrome tap **⋮ → Install app / Add to Home screen**.
 Allow location when the browser asks. Keep the page open while navigating.

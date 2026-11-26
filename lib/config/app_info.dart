@@ -25,8 +25,7 @@ class AppInfo {
   static const String website = ''; // e.g. GitHub or LinkedIn URL
 
   // --- Where to get the app -------------------------------------------------
-  static const String webAppUrl =
-      'https://nabajyoti007.github.io/CDU_Campus_Navigation/';
+  static const String webAppUrl = 'https://cdu-campus-navigator.netlify.app';
   static const String sourceUrl =
       'https://github.com/nabajyoti007/CDU_Campus_Navigation';
 
