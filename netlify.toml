@@ -1,0 +1,18 @@
+# Prebuilt Flutter web app: nothing to build on Netlify.
+[build]
+  publish = "."
+  command = ""
+
+# Always fetch the newest app code, cache the rest.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/flutter_bootstrap.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/main.dart.js"
+  [headers.values]
+    Cache-Control = "no-cache"
