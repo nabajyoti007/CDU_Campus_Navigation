@@ -115,6 +115,7 @@ Details and rebuild steps: [campus_data/README.md](campus_data/README.md).
   contributors, Open Database Licence (ODbL).
 - Street map tiles: [OpenFreeMap](https://openfreemap.org).
 - Map rendering: [MapLibre](https://maplibre.org).
+- Web hosting: [Netlify](https://www.netlify.com).
 
 ## Author
 

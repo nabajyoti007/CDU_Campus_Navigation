@@ -46,6 +46,11 @@
     .maplibregl-ctrl-top-right { display: none !important; }
     /* Map credit (required) stays in the bottom-right corner, below the app's
        buttons and clear of the card's Directions button. */
+    /* "Powered by Netlify" badge that Netlify injects on free sites: a fixed
+       iframe in the bottom-right corner that covers the location button and
+       the bottom card's buttons. Visitors can dismiss it anyway, so it is
+       hidden here (Netlify is credited in the README). */
+    #nl-badge-frame { display: none !important; }
   </style>
   <link rel="manifest" href="manifest.json">
 </head>
