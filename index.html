@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/CDU_Campus_Navigation/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Find any building on CDU Casuarina campus and get walking directions from where you are.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#211858">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CDU Navigator">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>CDU Campus Navigator</title>
+
+  <!-- Map controls that MapLibre adds on the web only. The app has its own
+       buttons, so hide the duplicate location button and keep the rest clear
+       of the search bar and the app's buttons (same layout as the Android app). -->
+  <style>
+    /* Duplicate "my location" button. The blue location dot itself stays. */
+    .maplibregl-ctrl-geolocate { display: none !important; }
+    .maplibregl-ctrl-group:has(> .maplibregl-ctrl-geolocate:only-child) { display: none !important; }
+    /* Compass: not needed on the web (the map stays north-up); it would sit
+       on top of the bottom card. */
+    .maplibregl-ctrl-top-right { display: none !important; }
+    /* Map credit (required) stays in the bottom-right corner, below the app's
+       buttons and clear of the card's Directions button. */
+    /* "Powered by Netlify" badge that Netlify injects on free sites: a fixed
+       iframe in the bottom-right corner that covers the location button and
+       the bottom card's buttons. Visitors can dismiss it anyway, so it is
+       hidden here (Netlify is credited in the README). */
+    #nl-badge-frame { display: none !important; }
+  </style>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
