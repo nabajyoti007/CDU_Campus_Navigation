@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../models/destination.dart';
@@ -119,6 +120,11 @@ class DestinationBadge extends StatelessWidget {
   }
 }
 
+/// Extra space at the bottom of panels and sheets on the web, where the map
+/// credit line (required, drawn by the browser map along the bottom edge and
+/// shown above the app) sits, so it never covers a button or list row.
+const double webCreditGap = kIsWeb ? 26 : 0;
+
 /// Rounded white bottom sheet used by all panels.
 class BottomPanel extends StatelessWidget {
   const BottomPanel({super.key, required this.child});
@@ -134,7 +140,7 @@ class BottomPanel extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 10, 10, 14),
+          padding: const EdgeInsets.fromLTRB(18, 10, 10, 14 + webCreditGap),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

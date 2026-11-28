@@ -471,6 +471,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
                 title: const Text('Choose a building or place…'),
                 onTap: () => Navigator.pop(context, 'building'),
               ),
+              const SizedBox(height: webCreditGap),
             ],
           ),
         ),

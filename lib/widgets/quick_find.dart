@@ -85,6 +85,7 @@ Future<Destination?> showPlaceList(
           Expanded(
             child: ListView.builder(
               controller: scroll,
+              padding: const EdgeInsets.only(bottom: webCreditGap),
               itemCount: places.length,
               itemBuilder: (context, i) {
                 final d = campus.destinationForPlace(places[i]);
